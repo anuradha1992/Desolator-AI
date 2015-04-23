@@ -198,28 +198,28 @@ public class PathFinder {
         int newG_cost = 0;
         int newDirection = -1;
         if (cell.getY() > parent_y) {
-            if (parent.getDirection() == 1) {
+            if (parent.getDirection() == 2) {
                 newG_cost = parent.getG_cost() + 1;
             } else {
                 newG_cost = parent.getG_cost() + 2;
             }
             newDirection = 1;
         } else if (cell.getY() < parent_y) {
-            if (parent.getDirection() == 3) {
+            if (parent.getDirection() == 0) {
                 newG_cost = parent.getG_cost() + 1;
             } else {
                 newG_cost = parent.getG_cost() + 2;
             }
             newDirection = 3;
         } else if (cell.getX() > parent_x) {
-            if (parent.getDirection() == 2) {
+            if (parent.getDirection() == 1) {
                 newG_cost = parent.getG_cost() + 1;
             } else {
                 newG_cost = parent.getG_cost() + 2;
             }
             newDirection = 2;
         } else if (cell.getX() < parent_x) {
-            if (parent.getDirection() == 0) {
+            if (parent.getDirection() == 3) {
                 newG_cost = parent.getG_cost() + 1;
             } else {
                 newG_cost = parent.getG_cost() + 2;

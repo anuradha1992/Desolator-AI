@@ -59,7 +59,7 @@ public class NextMove {
             i++;
         }
 
-        System.out.println("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$");
+        System.out.println("------------------------------------------------------------------------------------------------");
 
         for (int k = actualPath.size() - 1; k >= 0; k--) {        //the actual path needs to be read from largest cell index to smallest cell index to take the path
             System.out.print(" " + actualPath.get(k).getX() + " " + actualPath.get(k).getY() + " | ");
@@ -84,6 +84,7 @@ public class NextMove {
                 for (int j = 0; j < MAP_SIZE; j++) {
                     if (gameObArr[i][j] != null) {
                         if (gameObArr[i][j].toString().equalsIgnoreCase("CoinPile") || gameObArr[i][j].toString().equalsIgnoreCase("LifePack")) {
+                            System.out.println("^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ " + tank.getDirection());
                             PathFinder pf = new PathFinder(tank.getX(), tank.getY(), tank.getDirection(), gameObArr[i][j].getX(), gameObArr[i][j].getY(), map);
                             ArrayList<Cell> path = pf.findPath();
                             if (path != null) {
@@ -91,19 +92,18 @@ public class NextMove {
                                 System.out.println("At the first place");
                                 getActualPath(path);
                                 int timeCost = lastCell.getG_cost();
-                                
+
                                 System.out.println("(((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((");
                                 System.out.println(gameObArr[i][j]);
                                 System.out.println(tank);
                                 System.out.println(gameObArr[i][j].toString() + " " + tank.getX() + " " + tank.getY() + " " + tank.getDirection() + " " + gameObArr[i][j].getX() + " " + gameObArr[i][j].getY() + " " + timeCost);
                                 System.out.println("(((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((");
-                                
                                 float remainingLifeTime = 0;
+
                                 if (gameObArr[i][j].toString().equalsIgnoreCase("CoinPile")) {
                                     CoinPile cp = (CoinPile) gameObArr[i][j];
                                     remainingLifeTime = cp.getRemainingLifeTime() / 1000;
-                                } 
-                                else if (gameObArr[i][j].toString().equalsIgnoreCase("LifePack")) {
+                                } else if (gameObArr[i][j].toString().equalsIgnoreCase("LifePack")) {
                                     LifePack lp = (LifePack) gameObArr[i][j];
                                     remainingLifeTime = lp.getRemainingLifeTime() / 1000;
                                 }
@@ -111,9 +111,10 @@ public class NextMove {
                                     validGameObArr.add(gameObArr[i][j]);
                                     timeCosts.add((float) timeCost);
                                     aStarPaths.add(path);
-                                    System.out.println("Place of added actionObjects to array");
-                                    getActualPath(path);
+//                                    System.out.println("Place of added actionObjects to array");
+//                                    getActualPath(path);
                                 }
+
                             }
 
                         }
@@ -130,13 +131,11 @@ public class NextMove {
 //                    }
 //                }
 //            }
-
         }
 
-        System.out.println("___________________________________________________________________________________________");
-        System.out.println("size " + validGameObArr.size());
-        System.out.println("___________________________________________________________________________________________");
-
+//        System.out.println("___________________________________________________________________________________________");
+//        System.out.println("size " + validGameObArr.size());
+//        System.out.println("___________________________________________________________________________________________");
     }
 
     public void addViableOpponents(Tank opponent) {
@@ -240,9 +239,7 @@ public class NextMove {
     public String getNextMove() {
         if (validGameObArr != null && validGameObArr.size() != 0 /*&& validGameObArr.size() == aStarPaths.size()*/) {
             float gameObScores[] = new float[validGameObArr.size()];
-            
-            
-            
+
             for (int i = 0; i < validGameObArr.size(); i++) {
                 GameObject ob = validGameObArr.get(i);
                 String type = ob.toString();
@@ -274,10 +271,10 @@ public class NextMove {
                     maxIdx = i;
                 }
             }
-            System.out.println(validGameObArr.size());
-            System.out.println(timeCosts.size());
-            System.out.println(aStarPaths.size());
-            System.out.println("Getting the actualest path : " + maxIdx);
+//            System.out.println(validGameObArr.size());
+//            System.out.println(timeCosts.size());
+//            System.out.println(aStarPaths.size());
+//            System.out.println("Getting the actualest path : " + maxIdx);
 
             if (aStarPaths.size() > 0 && aStarPaths.size() - 1 >= maxIdx) {  // because an error is coming and aStarpaths only contain paths to coinpiles $ lifepacks no paths to opponents
                 ArrayList<Cell> actualPath = getActualPath(aStarPaths.get(maxIdx));
