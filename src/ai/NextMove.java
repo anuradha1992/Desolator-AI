@@ -75,7 +75,7 @@ public class NextMove {
     }
 
     public void addActionObjects() {
-
+        try{
         if (tank != null && !tank.isToBeRemoved()) {
 
             GameObject[][] gameObArr = map.getMap();
@@ -136,6 +136,9 @@ public class NextMove {
 //        System.out.println("___________________________________________________________________________________________");
 //        System.out.println("size " + validGameObArr.size());
 //        System.out.println("___________________________________________________________________________________________");
+        }catch(Exception e){
+            System.out.println("Game obs null exception occured");
+        }
     }
 
     public void addViableOpponents(Tank opponent) {
@@ -251,9 +254,16 @@ public class NextMove {
                         gameObScores[i] = coeff * COIN;
                         break;
                     case "LifePack":
-                        coeff = 1 / timeCosts.get(i);
-                        gameObScores[i] = coeff * LIFE;
-                        break;
+                        if (tank.getHealth() <= 50) {
+                            coeff = 1 / (tank.getHealth() * timeCosts.get(i));
+                            gameObScores[i] = coeff * LIFE * 1000000;
+                            break;
+                        } else {
+                            coeff = 1 / (tank.getHealth() * timeCosts.get(i));
+                            gameObScores[i] = coeff * LIFE;
+                            break;
+                        }
+
 //                    case "LiveGameObject":
 //                        coeff = 1/ timeCosts.get(i);
 //                        gameObScores[i] = coeff * SHOOT;
