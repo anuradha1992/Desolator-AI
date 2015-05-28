@@ -36,6 +36,8 @@ public class Tank extends LiveGameObject {
     private boolean headingOccupiedCell;
     private boolean dead;
     private boolean isInvalidMove;
+    
+    private int shootCount = 0;
 
     public Tank(String name, int x, int y, int direction) {
         super(x, y, direction, new String[]{"../Desolator/src/images/tankRedSmallResized.png", "../Desolator/src/images/tankYellowSmallResized.png", "../Desolator/src/images/tankBlueSmallResized.png", "../Desolator/src/images/tankPinkSmallResized.png", "../Desolator/src/images/tankOrangeSmallResized.png"}, no_of_tanks);
@@ -336,6 +338,7 @@ public class Tank extends LiveGameObject {
      */
     public void setIsShot(int isShot) {
         this.isShot = isShot;
+        this.shootCount += isShot;
     }
 
     /**

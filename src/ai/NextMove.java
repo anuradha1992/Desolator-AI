@@ -42,9 +42,11 @@ public class NextMove {
         this.aStarPaths = new ArrayList<>();
 
         addActionObjects();
+        addShootableOpponents(); // Shootable opponents will have time costs 0.0
 
     }
 
+    //get path from A* implementation
     public ArrayList<Cell> getActualPath(ArrayList<Cell> path) {     //use this function to get the actual path after taking the decision to go to which cell
         ArrayList<Cell> actualPath = new ArrayList<>();
 
@@ -75,168 +77,181 @@ public class NextMove {
     }
 
     public void addActionObjects() {
-        try{
-        if (tank != null && !tank.isToBeRemoved()) {
+        try {
+            if (tank != null && !tank.isToBeRemoved()) {
 
-            GameObject[][] gameObArr = map.getMap();
+                GameObject[][] gameObArr = map.getMap();
 
-            for (int i = 0; i < MAP_SIZE; i++) {
-                for (int j = 0; j < MAP_SIZE; j++) {
-                    if (gameObArr[i][j] != null) {
-                        if (gameObArr[i][j].toString().equalsIgnoreCase("CoinPile") || gameObArr[i][j].toString().equalsIgnoreCase("LifePack")) {
-                            System.out.println("^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ " + tank.getDirection());
-                            PathFinder pf = new PathFinder(tank.getX(), tank.getY(), tank.getDirection(), gameObArr[i][j].getX(), gameObArr[i][j].getY(), map);
-                            ArrayList<Cell> path = pf.findPath();
-                            if (path != null) {
-                                Cell lastCell = (Cell) path.get(path.size() - 1);
-                                System.out.println("At the first place");
-                                getActualPath(path);
-                                int timeCost = lastCell.getG_cost();
+                for (int i = 0; i < MAP_SIZE; i++) {
+                    for (int j = 0; j < MAP_SIZE; j++) {
+                        if (gameObArr[i][j] != null) {
+                            if (gameObArr[i][j].toString().equalsIgnoreCase("CoinPile") || gameObArr[i][j].toString().equalsIgnoreCase("LifePack")) {
+                                System.out.println("^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ " + tank.getDirection());
+                                PathFinder pf = new PathFinder(tank.getX(), tank.getY(), tank.getDirection(), gameObArr[i][j].getX(), gameObArr[i][j].getY(), map);
+                                ArrayList<Cell> path = pf.findPath();
+                                if (path != null) {
+                                    Cell lastCell = (Cell) path.get(path.size() - 1);
+                                    System.out.println("At the first place");
+                                    getActualPath(path);
+                                    int timeCost = lastCell.getG_cost();
 
-                                System.out.println("(((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((");
-                                System.out.println(gameObArr[i][j]);
-                                System.out.println(tank);
-                                System.out.println(gameObArr[i][j].toString() + " " + tank.getX() + " " + tank.getY() + " " + tank.getDirection() + " " + gameObArr[i][j].getX() + " " + gameObArr[i][j].getY() + " " + timeCost);
-                                System.out.println("(((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((");
-                                float remainingLifeTime = 0;
+                                    System.out.println("(((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((");
+                                    System.out.println(gameObArr[i][j]);
+                                    System.out.println(tank);
+                                    System.out.println(gameObArr[i][j].toString() + " " + tank.getX() + " " + tank.getY() + " " + tank.getDirection() + " " + gameObArr[i][j].getX() + " " + gameObArr[i][j].getY() + " " + timeCost);
+                                    System.out.println("(((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((");
+                                    float remainingLifeTime = 0;
 
-                                if (gameObArr[i][j].toString().equalsIgnoreCase("CoinPile")) {
-                                    CoinPile cp = (CoinPile) gameObArr[i][j];
-                                    remainingLifeTime = cp.getRemainingLifeTime() / 1000;
-                                } else if (gameObArr[i][j].toString().equalsIgnoreCase("LifePack")) {
-                                    LifePack lp = (LifePack) gameObArr[i][j];
-                                    remainingLifeTime = lp.getRemainingLifeTime() / 1000;
-                                }
-                                if (Math.floor(remainingLifeTime) >= timeCost) {
-                                    validGameObArr.add(gameObArr[i][j]);
-                                    timeCosts.add((float) timeCost);
-                                    aStarPaths.add(path);
+                                    if (gameObArr[i][j].toString().equalsIgnoreCase("CoinPile")) {
+                                        CoinPile cp = (CoinPile) gameObArr[i][j];
+                                        remainingLifeTime = cp.getRemainingLifeTime() / 1000;
+                                    } else if (gameObArr[i][j].toString().equalsIgnoreCase("LifePack")) {
+                                        LifePack lp = (LifePack) gameObArr[i][j];
+                                        remainingLifeTime = lp.getRemainingLifeTime() / 1000;
+                                    }
+                                    if (Math.floor(remainingLifeTime) >= timeCost) {
+                                        validGameObArr.add(gameObArr[i][j]);
+                                        timeCosts.add((float) timeCost);
+                                        aStarPaths.add(path);
 //                                    System.out.println("Place of added actionObjects to array");
 //                                    getActualPath(path);
+                                    }
+
                                 }
 
                             }
-
                         }
                     }
                 }
-            }
 
 //            if (opponents != null) {
 //                for (int k = 0; k < opponents.length; k++) {
 //                    if (opponents[k] != null) {
 //                        if (opponents[k].getHealth() > 0) {
-//                            addViableOpponents(opponents[k]);
+//                            addShootableOpponents(opponents[k]);
 //                        }
 //                    }
 //                }
 //            }
-        }
+            }
 
 //        System.out.println("___________________________________________________________________________________________");
 //        System.out.println("size " + validGameObArr.size());
 //        System.out.println("___________________________________________________________________________________________");
-        }catch(Exception e){
+        } catch (Exception e) {
             System.out.println("Game obs null exception occured");
         }
     }
 
-    public void addViableOpponents(Tank opponent) {
-
-        boolean add = true;
-        float cost = 0;
-        float directionCost = 0;
+    /*
+     * returns true if the passed opponent is in clear range(without any obstacles in between our tank and it) along the direction our tank is headed
+     * counts those opponents infront of us as well as behind us
+     */
+    private boolean isClearlyAlignedOpponent(Tank opponent) {
         GameObject[][] gameObArr = map.getMap();
+        boolean clearlyAligned = true;
+        if (tank.getDirection() == 1 || tank.getDirection() == 3) {
+            if (tank.getY() == opponent.getY()) {
+                if (tank.getX() <= opponent.getX()) {
 
-        if (tank.getX() == opponent.getX()) {
-            if (tank.getY() <= opponent.getY()) {
-
-                for (int i = tank.getY() + 1; i < opponent.getY(); i++) {
-                    if (gameObArr[tank.getX()][i] != null) {
-                        if (gameObArr[tank.getX()][i].toString().equalsIgnoreCase("Brick") || gameObArr[tank.getX()][i].toString().equalsIgnoreCase("Stone")) {
-                            add = false;
-                            break;
+                    for (int i = tank.getX() + 1; i < opponent.getX(); i++) {
+                        if (gameObArr[tank.getY()][i] != null) {
+                            if (gameObArr[tank.getY()][i].toString().equalsIgnoreCase("Brick") || gameObArr[tank.getY()][i].toString().equalsIgnoreCase("Stone")) {
+                                clearlyAligned = false;
+                                break;
+                            }
                         }
                     }
-                }
-                if (add == true) {
-                    //direction cost
-                    if (tank.getDirection() == 0) {
-                        directionCost = 0;
-                    } else {
-                        directionCost = 1;
-                    }
-                }
-
-            } else {
-                for (int i = opponent.getY() + 1; i < tank.getY(); i++) {
-                    if (gameObArr[tank.getX()][i] != null) {
-                        if (gameObArr[tank.getX()][i].toString().equalsIgnoreCase("Brick") || gameObArr[tank.getX()][i].toString().equalsIgnoreCase("Stone")) {
-                            add = false;
-                            break;
+                } else {
+                    for (int i = opponent.getX() + 1; i < tank.getX(); i++) {
+                        if (gameObArr[tank.getY()][i] != null) {
+                            if (gameObArr[tank.getY()][i].toString().equalsIgnoreCase("Brick") || gameObArr[tank.getY()][i].toString().equalsIgnoreCase("Stone")) {
+                                clearlyAligned = false;
+                                break;
+                            }
                         }
                     }
-                }
-                if (add == true) {
-                    //direction cost
-                    if (tank.getDirection() == 2) {
-                        directionCost = 0;
-                    } else {
-                        directionCost = 1;
-                    }
+
                 }
             }
-            if (add == true) {
-                cost = directionCost + (Math.abs(opponent.getY() - tank.getY()) / 4f);   ///add direction cost too
-                validGameObArr.add(opponent);
-                timeCosts.add((float) cost);
-//                System.out.println("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa "+opponent.getName()+" "+cost);
-                return;
-            }
-        } else if (tank.getY() == opponent.getY()) {
-            if (tank.getX() <= opponent.getX()) {
-                for (int i = tank.getX() + 1; i < opponent.getX(); i++) {
-                    if (gameObArr[i][tank.getY()] != null) {
-                        if (gameObArr[i][tank.getY()].toString().equalsIgnoreCase("Brick") || gameObArr[i][tank.getY()].toString().equalsIgnoreCase("Stone")) {
-                            add = false;
-                            break;
+            return clearlyAligned;
+        } else {
+            if (tank.getX() == opponent.getX()) {
+                if (tank.getY() <= opponent.getY()) {
+
+                    for (int i = tank.getY() + 1; i < opponent.getY(); i++) {
+                        if (gameObArr[tank.getX()][i] != null) {
+                            if (gameObArr[tank.getX()][i].toString().equalsIgnoreCase("Brick") || gameObArr[tank.getX()][i].toString().equalsIgnoreCase("Stone")) {
+                                clearlyAligned = false;
+                                break;
+                            }
                         }
                     }
-                }
-                if (add == true) {
-                    //direction cost
-                    if (tank.getDirection() == 1) {
-                        directionCost = 0;
-                    } else {
-                        directionCost = 1;
-                    }
-                }
-            } else {
-                for (int i = opponent.getX() + 1; i < tank.getX(); i++) {
-                    if (gameObArr[i][tank.getY()] != null) {
-                        if (gameObArr[i][tank.getY()].toString().equalsIgnoreCase("Brick") || gameObArr[i][tank.getY()].toString().equalsIgnoreCase("Stone")) {
-                            add = false;
-                            break;
+                } else {
+                    for (int i = opponent.getY() + 1; i < tank.getY(); i++) {
+                        if (gameObArr[tank.getX()][i] != null) {
+                            if (gameObArr[tank.getX()][i].toString().equalsIgnoreCase("Brick") || gameObArr[tank.getX()][i].toString().equalsIgnoreCase("Stone")) {
+                                clearlyAligned = false;
+                                break;
+                            }
                         }
                     }
-                }
-                if (add == true) {
-                    //direction cost
-                    if (tank.getDirection() == 3) {
-                        directionCost = 0;
-                    } else {
-                        directionCost = 1;
-                    }
+
                 }
             }
-            if (add == true) {
-                cost = directionCost + (Math.abs(opponent.getX() - tank.getX()) / 4f);   ///add direction cost too
-                validGameObArr.add(opponent);
-                timeCosts.add(cost);
-//                System.out.println("bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb "+opponent.getName()+" "+cost);
-                return;
+            return clearlyAligned;
+
+        }
+    }
+
+    public void addShootableOpponents() {
+        for (Tank opponent : opponents) {
+
+            float cost = 0;
+
+            boolean aligned = isClearlyAlignedOpponent(opponent);
+            if (aligned) {
+
+                if (tank.getDirection() == 0 && opponent.getY() < tank.getY()) {
+                    cost = tank.getY() - opponent.getY();
+                } else if (tank.getDirection() == 2 && opponent.getY() > tank.getY()) {
+                    cost = opponent.getY() - tank.getY();
+                } else if (tank.getDirection() == 1 && opponent.getX() > tank.getX()) {
+                    cost = opponent.getX() - tank.getX();
+                } else if (tank.getDirection() == 3 && opponent.getX() < tank.getX()) {
+                    cost = tank.getX() - opponent.getX();
+                }
+                if (cost <= 4) { //add as shootable only if it is in very close range coz if killed at distance someone else might get the huge coinpile  :P
+                    validGameObArr.add(opponent);
+                    timeCosts.add(0.0f);
+                }
+            }
+
+        }
+    }
+
+    private boolean isAimedAtMe(Tank opponent) {
+        if (opponent.getDirection() == 0 && tank.getY() < opponent.getY()) {
+            return true;
+        } else if (opponent.getDirection() == 2 && tank.getY() > opponent.getY()) {
+            return true;
+        } else if (opponent.getDirection() == 1 && tank.getX() > opponent.getX()) {
+            return true;
+        } else if (opponent.getDirection() == 3 && tank.getX() < opponent.getX()) {
+            return true;
+        }else{
+            return false;
+        }
+    }
+
+    private boolean bulletIncoming() {
+        boolean incoming = false;
+        for (Tank opponent : opponents) {
+            if (isClearlyAlignedOpponent(opponent) && isAimedAtMe(opponent) && opponent.getIsShot() == 1 ) {
+                incoming = true;
             }
         }
+        return incoming;
     }
 
     public String getNextMove() {
