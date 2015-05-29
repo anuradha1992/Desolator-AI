@@ -274,7 +274,6 @@ public class NextMove {
     public String getNextMove() {
         if (bulletIncoming()) {
             dodgingBullet = true;
-
         }
         if (validGameObArr != null && validGameObArr.size() != 0) {
             if (dodgingBullet) {
@@ -287,12 +286,12 @@ public class NextMove {
                     int l = posX - 1;
                     int r = posX + 1;
                     GameObject[][] gameObArr = map.getMap();
-                    while (l >= 0 && !(gameObArr[posY][l].toString().equalsIgnoreCase("CoinPile") || gameObArr[posY][l].toString().equalsIgnoreCase("LifePack") || gameObArr[posY][l] == null)) {
+                    while (l >= 0 && !(gameObArr[posY][l] == null || gameObArr[posY][l].toString().equalsIgnoreCase("CoinPile") || gameObArr[posY][l].toString().equalsIgnoreCase("LifePack") )) {
                         l--;
                     }
                     targetY = posY;
-                    if (l < 0) {
-                        while (r < MAP_SIZE && !(gameObArr[posY][r].toString().equalsIgnoreCase("CoinPile") || gameObArr[posY][r].toString().equalsIgnoreCase("LifePack") || gameObArr[posY][r] == null)) {
+                    if (l < 0) { // We dont have any posible cell to move to in our left side
+                        while (r < MAP_SIZE && !(gameObArr[posY][r] == null || gameObArr[posY][r].toString().equalsIgnoreCase("CoinPile") || gameObArr[posY][r].toString().equalsIgnoreCase("LifePack"))) {
                             r++;
                         }
                         targetX = r;
@@ -306,12 +305,12 @@ public class NextMove {
                     int l = posY + 1;
                     int r = posY - 1;
                     GameObject[][] gameObArr = map.getMap();
-                    while (r >= 0 && !(gameObArr[r][posX].toString().equalsIgnoreCase("CoinPile") || gameObArr[r][posX].toString().equalsIgnoreCase("LifePack") || gameObArr[r][posX] == null)) {
+                    while (r >= 0 && !( gameObArr[r][posX] == null || gameObArr[r][posX].toString().equalsIgnoreCase("CoinPile") || gameObArr[r][posX].toString().equalsIgnoreCase("LifePack"))) {
                         r--;
                     }
                     targetX = posX;
                     if (r < 0) {
-                        while (l < MAP_SIZE && !(gameObArr[l][posX].toString().equalsIgnoreCase("CoinPile") || gameObArr[l][posX].toString().equalsIgnoreCase("LifePack") || gameObArr[l][posX] == null)) {
+                        while (l < MAP_SIZE && !( gameObArr[l][posX] == null || gameObArr[l][posX].toString().equalsIgnoreCase("CoinPile") || gameObArr[l][posX].toString().equalsIgnoreCase("LifePack"))) {
                             l++;
                         }
                         targetY = l;
