@@ -31,12 +31,13 @@ public class NextMove {
     public NextMove(Tank tank, Tank[] opponents, Map map) {
 
         //to read from file and process coefficients
-        COIN = 10;
+        COIN = 1000;
         LIFE = 1000;
-        SHOOT = 1000*18;
+        SHOOT = 1000 * 100;
 //        DEFEND = 0;
 
         this.tank = tank;
+
         this.opponents = opponents;
         this.map = map;
         this.validGameObArr = new ArrayList<>();
@@ -94,7 +95,7 @@ public class NextMove {
                                 if (path != null) {
                                     Cell lastCell = (Cell) path.get(path.size() - 1);
                                     System.out.println("At the first place");
-//                                    getActualPath(path);   What is this? this method returns a value and is not assigned to anywhere.. seems useless?
+//                                    getActualPath(path);  
                                     int timeCost = lastCell.getG_cost();
 
                                     System.out.println("(((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((");
@@ -153,7 +154,8 @@ public class NextMove {
         GameObject[][] gameObArr = map.getMap();
         boolean clearlyAligned = true;
         if (tank.getDirection() == 1 || tank.getDirection() == 3) {
-            if (tank.getY() == opponent.getY()) {
+            System.out.println("in if");
+            if (tank.getY() == opponent.getY() && opponent.getHealth() > 0) {
                 if (tank.getX() <= opponent.getX()) {
 
                     for (int i = tank.getX() + 1; i < opponent.getX(); i++) {
@@ -175,10 +177,14 @@ public class NextMove {
                     }
 
                 }
+                 return clearlyAligned;
+            }else{
+                return false;
             }
-            return clearlyAligned;
+           
         } else {
-            if (tank.getX() == opponent.getX()) {
+            System.out.println("in else "+tank.getX()+"  "+opponent.getX());
+            if (tank.getX() == opponent.getX() && opponent.getHealth() > 0) {
                 if (tank.getY() <= opponent.getY()) {
 
                     for (int i = tank.getY() + 1; i < opponent.getY(); i++) {
@@ -200,34 +206,41 @@ public class NextMove {
                     }
 
                 }
+                return clearlyAligned;
+            }else{
+                return false;
             }
-            return clearlyAligned;
+            
 
         }
     }
 
     public void addShootableOpponents() {
         for (Tank opponent : opponents) {
+            if (opponent != null) {
+                float cost = 0;
 
-            float cost = 0;
-
-            boolean aligned = isClearlyAlignedOpponent(opponent);
-            if (aligned) {
-
-                if (tank.getDirection() == 0 && opponent.getY() < tank.getY()) {
-                    cost = tank.getY() - opponent.getY();
-                } else if (tank.getDirection() == 2 && opponent.getY() > tank.getY()) {
-                    cost = opponent.getY() - tank.getY();
-                } else if (tank.getDirection() == 1 && opponent.getX() > tank.getX()) {
-                    cost = opponent.getX() - tank.getX();
-                } else if (tank.getDirection() == 3 && opponent.getX() < tank.getX()) {
-                    cost = tank.getX() - opponent.getX();
-                }
-                if (cost <= 4) { //add as shootable only if it is in very close range coz if killed at distance someone else might get the huge coinpile  :P
-                    validGameObArr.add(opponent);
-                    timeCosts.add(0.0f);
-                    System.out.println("opponent addedd!!!!!!!!!!!");
-//                    aStarPaths.add(null);
+                boolean aligned = isClearlyAlignedOpponent(opponent);
+                
+                if (aligned) {
+                    System.out.println("opponent "+ opponent.getName()+" is clearly aligned!!!!!!!!!!!");
+                    if (tank.getDirection() == 0 && opponent.getY() < tank.getY()) {
+                        cost = tank.getY() - opponent.getY();
+                    } else if (tank.getDirection() == 2 && opponent.getY() > tank.getY()) {
+                        cost = opponent.getY() - tank.getY();
+                    } else if (tank.getDirection() == 1 && opponent.getX() > tank.getX()) {
+                        cost = opponent.getX() - tank.getX();
+                    } else if (tank.getDirection() == 3 && opponent.getX() < tank.getX()) {
+                        cost = tank.getX() - opponent.getX();
+                    }else{
+                        continue;
+                    }
+                    if (cost <= 8) { //add as shootable only if it is in very close range coz if killed at distance someone else might get the huge coinpile  :P
+                        validGameObArr.add(opponent);
+                        timeCosts.add(0.0f);
+                        System.out.println("opponent addedd!!!!!!!!!!!");
+//                        aStarPaths.add(null);
+                    }
                 }
             }
 
@@ -251,7 +264,7 @@ public class NextMove {
     private boolean bulletIncoming() {
         boolean incoming = false;
         for (Tank opponent : opponents) {
-            if (isClearlyAlignedOpponent(opponent) && isAimedAtMe(opponent) && opponent.getIsShot() == 1) {
+            if (opponent!=null && isClearlyAlignedOpponent(opponent) && isAimedAtMe(opponent) && opponent.getIsShot() == 1) {
                 incoming = true;
             }
         }
@@ -402,10 +415,10 @@ public class NextMove {
 //            System.out.println(timeCosts.size());
 //            System.out.println(aStarPaths.size());
 //            System.out.println("Getting the actualest path : " + maxIdx);
-                if(validGameObArr.get(maxIdx).toString().equalsIgnoreCase("LiveGameObject")){
+                if (validGameObArr.get(maxIdx).toString().startsWith("P")) {
                     System.out.println("SHooooooooooooooootinggggg!!!");
                     return "SHOOT";
-                }else if(aStarPaths.size() > 0 && aStarPaths.size() - 1 >= maxIdx) {  // because an error is coming and aStarpaths only contain paths to coinpiles $ lifepacks no paths to opponents
+                } else if (aStarPaths.size() > 0 && aStarPaths.size() - 1 >= maxIdx) {  // because an error is coming and aStarpaths only contain paths to coinpiles $ lifepacks no paths to opponents
                     ArrayList<Cell> actualPath = getActualPath(aStarPaths.get(maxIdx));
                     if (actualPath.size() > 1) {
                         Cell nextCell = actualPath.get(1);
