@@ -10,7 +10,7 @@ import view.Map;
 
 public class NextMove {
 
-    private boolean dodgingBullet = false;
+    private static boolean dodgingBullet = false;
 
     private int MAP_SIZE = 20;
 
@@ -31,7 +31,7 @@ public class NextMove {
     public NextMove(Tank tank, Tank[] opponents, Map map) {
 
         //to read from file and process coefficients
-        COIN = 1000;
+        COIN = 100;
         LIFE = 1000;
         SHOOT = 1000 * 100;
 //        DEFEND = 0;
@@ -365,10 +365,37 @@ public class NextMove {
                     }
 
                 } else if (actualPath.size() <= 1) { //dodging is complete
+                    System.out.println("dogingg completed!!!!!!!!!!!");
                     dodgingBullet = false;
                 }
 
             } else {
+                
+                //this loop checks if any tank is obstructing our path and shoots it untill it leaves our path
+                for(GameObject ob:validGameObArr){
+                    if(validGameObArr.toString().startsWith("P")){
+                        switch(tank.getDirection()){
+                            case 0:
+                                if(ob.getY() == (tank.getY()-1))
+                                    return "SHOOT";
+                                break;
+                            case 1:
+                                if(ob.getX() == (tank.getX()+1))
+                                    return "SHOOT";
+                                break;
+                            case 2:
+                                if(ob.getY() == (tank.getY()+1))
+                                    return "SHOOT";
+                                break;
+                            case 3:
+                                if(ob.getX() == (tank.getX()-1))
+                                    return "SHOOT";
+                                break;
+                                
+                        }
+                    }
+                }
+                
                 float gameObScores[] = new float[validGameObArr.size()];
 
                 for (int i = 0; i < validGameObArr.size(); i++) {
@@ -414,6 +441,9 @@ public class NextMove {
 //            System.out.println(timeCosts.size());
 //            System.out.println(aStarPaths.size());
 //            System.out.println("Getting the actualest path : " + maxIdx);
+                
+                
+                
                 if (validGameObArr.get(maxIdx).toString().startsWith("P")) {
                     System.out.println("SHooooooooooooooootinggggg!!!");
                     return "SHOOT";
