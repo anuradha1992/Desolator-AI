@@ -31,7 +31,7 @@ public class NextMove {
     public NextMove(Tank tank, Tank[] opponents, Map map) {
 
         //to read from file and process coefficients
-        COIN = 100;
+        COIN = 500;
         LIFE = 1000;
         SHOOT = 1000 * 100;
 //        DEFEND = 0;
