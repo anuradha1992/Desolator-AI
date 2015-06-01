@@ -10,7 +10,7 @@ import view.Map;
 
 public class NextMove {
 
-    private boolean dodgingBullet = false;
+    private static boolean dodgingBullet = false;
 
     private int MAP_SIZE = 20;
 
