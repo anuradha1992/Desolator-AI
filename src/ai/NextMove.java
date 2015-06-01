@@ -46,7 +46,6 @@ public class NextMove {
 
         addActionObjects();
         addShootableOpponents(); // Shootable opponents will have time costs 0.0
-        
 
     }
 
@@ -178,13 +177,13 @@ public class NextMove {
                     }
 
                 }
-                 return clearlyAligned;
-            }else{
+                return clearlyAligned;
+            } else {
                 return false;
             }
-           
+
         } else {
-            System.out.println("in else "+tank.getX()+"  "+opponent.getX());
+            System.out.println("in else " + tank.getX() + "  " + opponent.getX());
             if (tank.getX() == opponent.getX() && opponent.getHealth() > 0) {
                 if (tank.getY() <= opponent.getY()) {
 
@@ -208,10 +207,9 @@ public class NextMove {
 
                 }
                 return clearlyAligned;
-            }else{
+            } else {
                 return false;
             }
-            
 
         }
     }
@@ -222,9 +220,9 @@ public class NextMove {
                 float cost = 0;
 
                 boolean aligned = isClearlyAlignedOpponent(opponent);
-                
+
                 if (aligned) {
-                    System.out.println("opponent "+ opponent.getName()+" is clearly aligned!!!!!!!!!!!");
+                    System.out.println("opponent " + opponent.getName() + " is clearly aligned!!!!!!!!!!!");
                     if (tank.getDirection() == 0 && opponent.getY() < tank.getY()) {
                         cost = tank.getY() - opponent.getY();
                     } else if (tank.getDirection() == 2 && opponent.getY() > tank.getY()) {
@@ -233,19 +231,34 @@ public class NextMove {
                         cost = opponent.getX() - tank.getX();
                     } else if (tank.getDirection() == 3 && opponent.getX() < tank.getX()) {
                         cost = tank.getX() - opponent.getX();
-                    }else{
+                    } else {
                         continue;
                     }
                     if (cost <= 8) { //add as shootable only if it is in very close range coz if killed at distance someone else might get the huge coinpile  :P
                         validGameObArr.add(opponent);
-                        timeCosts.add(0.0f);
+                        timeCosts.add(cost);
                         System.out.println("opponent addedd!!!!!!!!!!!");
-//                        aStarPaths.add(null);
+                        aStarPaths.add(null);
                     }
+                } else {  //else just add the other opponents even if they are far away
+
+                    if (opponent.getHealth() > 0) {
+                        PathFinder pf = new PathFinder(tank.getX(), tank.getY(), tank.getDirection(), opponent.getX(), opponent.getY(), map);
+                        ArrayList<Cell> path = pf.findPath();
+                        if (path != null) {
+                            Cell lastCell = (Cell) path.get(path.size() - 1);
+                            System.out.println("Just other opponents added");
+                            int timeCost = lastCell.getG_cost();
+                            validGameObArr.add(opponent);
+                            timeCosts.add((float) timeCost);
+                            aStarPaths.add(path);
+                        }
+                    }
+
                 }
             }
-
         }
+
     }
 
     private boolean isAimedAtMe(Tank opponent) {
@@ -265,7 +278,7 @@ public class NextMove {
     private boolean bulletIncoming() {
         boolean incoming = false;
         for (Tank opponent : opponents) {
-            if (opponent!=null && isClearlyAlignedOpponent(opponent) && isAimedAtMe(opponent) && opponent.getIsShot() == 1) {
+            if (opponent != null && isClearlyAlignedOpponent(opponent) && isAimedAtMe(opponent) && opponent.getIsShot() == 1) {
                 incoming = true;
             }
         }
@@ -287,7 +300,7 @@ public class NextMove {
                     int l = posX - 1;
                     int r = posX + 1;
                     GameObject[][] gameObArr = map.getMap();
-                    while (l >= 0 && !(gameObArr[posY][l] == null || gameObArr[posY][l].toString().equalsIgnoreCase("CoinPile") || gameObArr[posY][l].toString().equalsIgnoreCase("LifePack") )) {
+                    while (l >= 0 && !(gameObArr[posY][l] == null || gameObArr[posY][l].toString().equalsIgnoreCase("CoinPile") || gameObArr[posY][l].toString().equalsIgnoreCase("LifePack"))) {
                         l--;
                     }
                     targetY = posY;
@@ -306,12 +319,12 @@ public class NextMove {
                     int l = posY + 1;
                     int r = posY - 1;
                     GameObject[][] gameObArr = map.getMap();
-                    while (r >= 0 && !( gameObArr[r][posX] == null || gameObArr[r][posX].toString().equalsIgnoreCase("CoinPile") || gameObArr[r][posX].toString().equalsIgnoreCase("LifePack"))) {
+                    while (r >= 0 && !(gameObArr[r][posX] == null || gameObArr[r][posX].toString().equalsIgnoreCase("CoinPile") || gameObArr[r][posX].toString().equalsIgnoreCase("LifePack"))) {
                         r--;
                     }
                     targetX = posX;
                     if (r < 0) {
-                        while (l < MAP_SIZE && !( gameObArr[l][posX] == null || gameObArr[l][posX].toString().equalsIgnoreCase("CoinPile") || gameObArr[l][posX].toString().equalsIgnoreCase("LifePack"))) {
+                        while (l < MAP_SIZE && !(gameObArr[l][posX] == null || gameObArr[l][posX].toString().equalsIgnoreCase("CoinPile") || gameObArr[l][posX].toString().equalsIgnoreCase("LifePack"))) {
                             l++;
                         }
                         targetY = l;
@@ -371,32 +384,36 @@ public class NextMove {
                 }
 
             } else {
-                
+
                 //this loop checks if any tank is obstructing our path and shoots it untill it leaves our path
-                for(GameObject ob:validGameObArr){
-                    if(validGameObArr.toString().startsWith("P")){
-                        switch(tank.getDirection()){
+                for (GameObject ob : validGameObArr) {
+                    if (validGameObArr.toString().startsWith("P")) {
+                        switch (tank.getDirection()) {
                             case 0:
-                                if(ob.getY() == (tank.getY()-1))
+                                if (ob.getY() == (tank.getY() - 1)) {
                                     return "SHOOT";
+                                }
                                 break;
                             case 1:
-                                if(ob.getX() == (tank.getX()+1))
+                                if (ob.getX() == (tank.getX() + 1)) {
                                     return "SHOOT";
+                                }
                                 break;
                             case 2:
-                                if(ob.getY() == (tank.getY()+1))
+                                if (ob.getY() == (tank.getY() + 1)) {
                                     return "SHOOT";
+                                }
                                 break;
                             case 3:
-                                if(ob.getX() == (tank.getX()-1))
+                                if (ob.getX() == (tank.getX() - 1)) {
                                     return "SHOOT";
+                                }
                                 break;
-                                
+
                         }
                     }
                 }
-                
+
                 float gameObScores[] = new float[validGameObArr.size()];
 
                 for (int i = 0; i < validGameObArr.size(); i++) {
@@ -416,17 +433,21 @@ public class NextMove {
                                 break;
                             } else {
                                 coeff = 1 / (tank.getHealth() * timeCosts.get(i));
-                                gameObScores[i] = coeff * LIFE;
+                                gameObScores[i] = coeff * LIFE * 0.000001f;
                                 break;
                             }
                         default:
 //                        case "LiveGameObject":
 ////                            coeff = 1 / timeCosts.get(i);
 ////                            gameObScores[i] = coeff * SHOOT;
-                            gameObScores[i] = SHOOT;
+
+                            if (aStarPaths.get(i) != null) {
+                                gameObScores[i] = ((SHOOT / 100000) * (((Tank) ob).getScore()) + 1) / (((Tank) ob).getHealth() * timeCosts.get(i));
+                            } else {
+                                gameObScores[i] = (SHOOT * (((Tank) ob).getScore()) + 1) / (((Tank) ob).getHealth() * timeCosts.get(i));
+                            }
                             break;
                     }
-
                 }
 
                 float max = 0;
@@ -442,12 +463,58 @@ public class NextMove {
 //            System.out.println(timeCosts.size());
 //            System.out.println(aStarPaths.size());
 //            System.out.println("Getting the actualest path : " + maxIdx);
-                
-                
-                
+
                 if (validGameObArr.get(maxIdx).toString().startsWith("P")) {
-                    System.out.println("SHooooooooooooooootinggggg!!!");
-                    return "SHOOT";
+
+                    if (aStarPaths.get(maxIdx) != null) {
+                        System.out.println("SHooooooooooooooootinggggg!!!  ------------------ opponents Anuradha added");
+                        ArrayList<Cell> actualPath = getActualPath(aStarPaths.get(maxIdx));
+                        if (actualPath.size() > 1) {
+                            Cell nextCell = actualPath.get(1);
+
+                            int targetdir = -1;
+
+                            //Determine target direction
+                            int curx = tank.getX();
+                            int cury = tank.getY();
+
+                            if (nextCell.getX() == curx) {
+                                if (nextCell.getY() > cury) {
+                                    targetdir = 2;
+                                } else if (nextCell.getY() < cury) {
+                                    targetdir = 0;
+                                } else {
+                                    System.out.println("ERRRORRR:this next move is the current cell itself!!!!!!!!!!!!!!!!!!!!");
+                                }
+                            } else {
+                                if (nextCell.getX() > curx) {
+                                    targetdir = 3;
+                                } else {
+                                    targetdir = 1;
+                                }
+                            }
+
+                            if (targetdir >= 0) {
+                                switch (targetdir) {
+                                    case 0:
+                                        return "UP";
+                                    case 1:
+                                        return "LEFT";
+                                    case 2:
+                                        return "DOWN";
+                                    case 3:
+                                        return "RIGHT";
+                                }
+                            } else {
+                                System.out.println("ERRRORRRR:target direction is -1!!!!!!!!!!");
+
+                            }
+                        }
+                    } else {
+                        System.out.println("SHooooooooooooooootinggggg!!!");
+                        return "SHOOT";
+                    }
+
                 } else if (aStarPaths.size() > 0 && aStarPaths.size() - 1 >= maxIdx) {  // because an error is coming and aStarpaths only contain paths to coinpiles $ lifepacks no paths to opponents
                     ArrayList<Cell> actualPath = getActualPath(aStarPaths.get(maxIdx));
                     if (actualPath.size() > 1) {
@@ -496,7 +563,6 @@ public class NextMove {
 
         } else {
             System.out.println("validgameobarr is nulllllllll");
-
         }
 
         return "ERROR";
