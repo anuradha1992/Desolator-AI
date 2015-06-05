@@ -54,6 +54,8 @@ public class Interpreter extends Observable {
 
     Thread inputThread;
     Thread outputThread;
+    
+    private String msgType = "";
 
     public Interpreter(String serverIP, int portIn, int portOut) {
         joinErrors = new String[]{"PLAYERS_FULL#", "ALREADY_ADDED#", "GAME_ALREADY_STARTED#", "ME_ALREADY_STARTED#"};
@@ -156,6 +158,10 @@ public class Interpreter extends Observable {
     public String getCommunicator() {
         return communicator;
     }
+    
+    public String getLastMsgType(){
+        return msgType;
+    }
 
     public GameObject[] getUpdate() {
         GameObject[] objects;
@@ -163,8 +169,10 @@ public class Interpreter extends Observable {
         this.communicator = "server";
         this.message = message;
         if (message.startsWith("C:")) {
+            msgType = "C";
             setChanged();
             notifyObservers(this);
+            
 
             message = message.substring(2, message.indexOf("#"));
             String[] parts = message.split(":");
@@ -175,11 +183,18 @@ public class Interpreter extends Observable {
             int lt = Integer.parseInt(parts[1]);
             int val = Integer.parseInt(parts[2]);
 
-            CoinPile coins = new CoinPile(x, y, val, lt);
+            CoinPile coins = null;
+            if(lt != 5000){
+                coins = new CoinPile(x, y, val, lt);
+            }else{
+                coins = new CoinPile(x, y, val, lt*4);
+            }
+            
 //            System.out.println("coin created with a lt of " + lt);
             objects = new GameObject[]{coins};
             return objects;
         } else if (message.startsWith("L:")) {
+            msgType = "L";
             setChanged();
             notifyObservers(this);
 
@@ -194,6 +209,7 @@ public class Interpreter extends Observable {
             objects = new GameObject[]{life};
             return objects;
         } else if (message.startsWith("G:")) {
+            msgType = "G";
             setChanged();
             notifyObservers(this);
 
@@ -235,11 +251,12 @@ public class Interpreter extends Observable {
 
             return objects;
         } else if (isInGameError(message)) {
+            msgType = "E";
 //            System.out.println("ingame erorrrrrrrrrrr");
             handleInGameError();
             return null;
         } else {
-
+            msgType = "E";
             setChanged();
             notifyObservers(this);
             return null;

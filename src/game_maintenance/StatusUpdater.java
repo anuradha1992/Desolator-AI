@@ -27,7 +27,7 @@ public class StatusUpdater extends Observable implements Runnable {
     Map map;
     Tank[] tanks;
     boolean[] dead;
-    
+
     private Tank tank;
     private Tank[] opponents;
     long prevtime;
@@ -41,12 +41,12 @@ public class StatusUpdater extends Observable implements Runnable {
         dead = new boolean[5];
         setTanks();
     }
-    
 
     @Override
     public void run() {
         while (true) {
             GameObject[] obj = interpreter.getUpdate();
+            String msgType = interpreter.getLastMsgType();
 
             if (obj != null) {
                 ArrayList<Tank> tempTank = new ArrayList();
@@ -60,7 +60,7 @@ public class StatusUpdater extends Observable implements Runnable {
                                 tempTank.add(tankUpdate);
                             }
                             String name = tankUpdate.getName();
-                            
+
                             for (Tank tank : tanks) {//This update can be done more efficiently by taking the digit in thee name as the index to the array.
                                 if (tank != null && tank.getName().equals(tankUpdate.getName())) {
                                     tank.setX(tankUpdate.getX());
@@ -81,16 +81,16 @@ public class StatusUpdater extends Observable implements Runnable {
                                             GameObject[][] mapAr = map.getMap();
                                             if (mapAr[tank.getX()][tank.getY()] != null && mapAr[tank.getX()][tank.getY()].toString().equals("Water")) {
                                                 //Fallen to water
-//                                                System.out.println("FALLEN TO WATER : " + tank.getName());
+                                                System.out.println("FALLEN TO WATER : " + tank.getName());
                                                 Water water = new Water(tank.getX(), tank.getY());
                                                 map.updateMap(water, "Water");
-                                                
+
                                             } else {
                                                 //Not fallen to water
                                                 //Make a coin pile
 //                                                System.out.println("DEAD BY SHOT : " + tank.getName());
-                                                if(tank.getCoins() > 0){
-                                                    CoinPile coins = new CoinPile(tank.getX(), tank.getY(), tank.getCoins(), 5000);
+                                                if (tank.getCoins() > 0) {
+                                                    CoinPile coins = new CoinPile(tank.getX(), tank.getY(), tank.getCoins(), 5000 * 4);
                                                     map.updateMap(coins, "CoinPile");
                                                 }
                                             }
@@ -158,21 +158,23 @@ public class StatusUpdater extends Observable implements Runnable {
 
 //                System.out.println("Map and Tanks Updated!");
             }
-            
-            long curtime = java.lang.System.currentTimeMillis();
-                if(curtime - prevtime >= 1000){
-                    NextMove move = new NextMove(tank, opponents, map);
-                    tank.execute(move.getNextMove());
-                    prevtime = curtime;
-                    System.out.println("&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&");
-                }
-                
-            
+
+//            long curtime = java.lang.System.currentTimeMillis();
+//            if (curtime - prevtime >= 1000) {
+//                NextMove move = new NextMove(tank, opponents, map);
+//                tank.execute(move.getNextMove());
+//                prevtime = curtime;
+//                System.out.println("&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&");
+//            }
+            if (msgType.equals("G")) {
+                NextMove move = new NextMove(tank, opponents, map);
+                tank.execute(move.getNextMove());
+                System.out.println("GGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG");
+            }
         }
-        
+
     }
-    
-    
+
     private void setTanks() {
         String tankName = session.getPlayerName();
         Tank[] tanks = session.getTanks();
