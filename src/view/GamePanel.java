@@ -337,6 +337,21 @@ public class GamePanel extends JPanel implements ActionListener, Observer {
                 bullets.remove(i);
             }
         }
+
+        for (Tank t : opponents) {
+            if (t != null) {
+                ArrayList opponentBullets = t.getBullets();
+                for (int i = 0; i < opponentBullets.size(); i++) {
+                    Bullet bullet = (Bullet) opponentBullets.get(i);
+                    if (bullet.isVisible()) {
+                        bullet.move();
+                    } else {
+                        opponentBullets.remove(i);
+                    }
+                }
+            }
+        }
+
         repaint();
 
     }

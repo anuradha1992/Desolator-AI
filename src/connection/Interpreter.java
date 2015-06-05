@@ -175,7 +175,13 @@ public class Interpreter extends Observable {
             int lt = Integer.parseInt(parts[1]);
             int val = Integer.parseInt(parts[2]);
 
-            CoinPile coins = new CoinPile(x, y, val, lt);
+            CoinPile coins = null;
+            if(lt != 5000){
+                coins = new CoinPile(x, y, val, lt);
+            }else{
+                coins = new CoinPile(x, y, val, lt*4);
+            }
+            
 //            System.out.println("coin created with a lt of " + lt);
             objects = new GameObject[]{coins};
             return objects;

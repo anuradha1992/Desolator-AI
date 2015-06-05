@@ -115,12 +115,17 @@ public class PathFinder {
 
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     private void addAdjacentCellsToOpenList(Cell parent) {
+        
+        
+        
         int parent_x = parent.getX();
         int parent_y = parent.getY();
         if (parent_x - 1 >= 0) {
             int i = parent_y;
             int j = parent_x - 1;
-            if ( (j == dest_x && i == dest_y) || (mapArray[j][i] == null && !cellMapArray[i][j].isInClosedList())) {
+            
+            
+            if ( (j == dest_x && i == dest_y) || ((mapArray[j][i] == null || mapArray[j][i].toString().equalsIgnoreCase("CoinPile") || mapArray[j][i].toString().equalsIgnoreCase("LifePack")) && !cellMapArray[i][j].isInClosedList())) {
                 if (!cellMapArray[i][j].isInOpenList()) {
                     openList.add(cellMapArray[i][j]);
 
@@ -138,7 +143,7 @@ public class PathFinder {
         if (parent_y - 1 >= 0) {
             int i = parent_y - 1;
             int j = parent_x;
-            if ((j == dest_x && i == dest_y) || (mapArray[j][i] == null && !cellMapArray[i][j].isInClosedList())) {
+            if ((j == dest_x && i == dest_y) || ((mapArray[j][i] == null || mapArray[j][i].toString().equalsIgnoreCase("CoinPile") || mapArray[j][i].toString().equalsIgnoreCase("LifePack")) && !cellMapArray[i][j].isInClosedList())) {
                 if (!cellMapArray[i][j].isInOpenList()) {
                     openList.add(cellMapArray[i][j]);
 
@@ -157,7 +162,7 @@ public class PathFinder {
             int i = parent_y;
             int j = parent_x + 1;
 
-            if ((j == dest_x && i == dest_y) || (mapArray[j][i] == null && !cellMapArray[i][j].isInClosedList())) {
+            if ((j == dest_x && i == dest_y) || ((mapArray[j][i] == null || mapArray[j][i].toString().equalsIgnoreCase("CoinPile") || mapArray[j][i].toString().equalsIgnoreCase("LifePack")) && !cellMapArray[i][j].isInClosedList())) {
                 if (!cellMapArray[i][j].isInOpenList()) {
                     openList.add(cellMapArray[i][j]);
 
@@ -175,7 +180,7 @@ public class PathFinder {
         if (parent_y + 1 < GRID_SIZE) {
             int i = parent_y + 1;
             int j = parent_x;
-            if ((j == dest_x && i == dest_y) || (mapArray[j][i] == null && !cellMapArray[i][j].isInClosedList())) {
+            if ((j == dest_x && i == dest_y) || ((mapArray[j][i] == null || mapArray[j][i].toString().equalsIgnoreCase("CoinPile") || mapArray[j][i].toString().equalsIgnoreCase("LifePack")) && !cellMapArray[i][j].isInClosedList())) {
                 if (!cellMapArray[i][j].isInOpenList()) {
                     openList.add(cellMapArray[i][j]);
 

@@ -81,7 +81,7 @@ public class StatusUpdater extends Observable implements Runnable {
                                             GameObject[][] mapAr = map.getMap();
                                             if (mapAr[tank.getX()][tank.getY()] != null && mapAr[tank.getX()][tank.getY()].toString().equals("Water")) {
                                                 //Fallen to water
-//                                                System.out.println("FALLEN TO WATER : " + tank.getName());
+                                                System.out.println("FALLEN TO WATER : " + tank.getName());
                                                 Water water = new Water(tank.getX(), tank.getY());
                                                 map.updateMap(water, "Water");
                                                 
@@ -90,7 +90,7 @@ public class StatusUpdater extends Observable implements Runnable {
                                                 //Make a coin pile
 //                                                System.out.println("DEAD BY SHOT : " + tank.getName());
                                                 if(tank.getCoins() > 0){
-                                                    CoinPile coins = new CoinPile(tank.getX(), tank.getY(), tank.getCoins(), 5000);
+                                                    CoinPile coins = new CoinPile(tank.getX(), tank.getY(), tank.getCoins(), 5000*4);
                                                     map.updateMap(coins, "CoinPile");
                                                 }
                                             }
