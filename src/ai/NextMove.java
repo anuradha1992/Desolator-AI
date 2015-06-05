@@ -14,11 +14,6 @@ public class NextMove {
     private static boolean dodgeHorizontal = false;
     private static boolean dodgeVertical = false;
 
-    private static int nextX = -1;
-    private static int nextY = -1;
-    private static int nextDir = -1;
-    private static int retryCount = 0;
-
     private static int targetX = 0;
     private static int targetY = 0;
 
@@ -383,11 +378,6 @@ public class NextMove {
                     }
 
                     if (targetdir >= 0) {
-                        if (retryCount >= 3 || nextX != tank.getX() || nextY != tank.getY() || nextDir != tank.getDirection()) {
-                            nextX = tank.getX();
-                            nextY = tank.getY();
-                            nextDir = tank.getDirection();
-                            retryCount = 0;
                             switch (targetdir) {
                                 case 0:
                                     return "UP";
@@ -398,10 +388,6 @@ public class NextMove {
                                 case 3:
                                     return "RIGHT";
                             }
-                        } else {
-                            retryCount++;
-                            return "ERROR";
-                        }
                     } else {
                         System.out.println("ERRRORRRR:target direction is -1!!!!!!!!!!");
 
@@ -421,25 +407,25 @@ public class NextMove {
 
                 //this loop checks if any tank is obstructing our path and shoots it untill it leaves our path
                 for (GameObject ob : validGameObArr) {
-                    if (validGameObArr.toString().startsWith("P")) {
+                    if (ob.toString().startsWith("P")) {
                         switch (tank.getDirection()) {
                             case 0:
-                                if (ob.getY() == (tank.getY() - 1)) {
+                                if (ob.getY() == (tank.getY() - 1) && ob.getX() == tank.getX()) {
                                     return "SHOOT";
                                 }
                                 break;
                             case 1:
-                                if (ob.getX() == (tank.getX() + 1)) {
+                                if (ob.getX() == (tank.getX() + 1) && ob.getY() == tank.getY()) {
                                     return "SHOOT";
                                 }
                                 break;
                             case 2:
-                                if (ob.getY() == (tank.getY() + 1)) {
+                                if (ob.getY() == (tank.getY() + 1) && ob.getX() == tank.getX()) {
                                     return "SHOOT";
                                 }
                                 break;
                             case 3:
-                                if (ob.getX() == (tank.getX() - 1)) {
+                                if (ob.getX() == (tank.getX() - 1) && ob.getY() == tank.getY()) {
                                     return "SHOOT";
                                 }
                                 break;
@@ -530,11 +516,6 @@ public class NextMove {
 
                             if (targetdir >= 0) {
 
-                                if (retryCount >= 3 || nextX != tank.getX() || nextY != tank.getY() || nextDir != tank.getDirection()) {
-                                    nextX = tank.getX();
-                                    nextY = tank.getY();
-                                    nextDir = tank.getDirection();
-                                    retryCount = 0;
                                     switch (targetdir) {
                                         case 0:
                                             return "UP";
@@ -545,11 +526,6 @@ public class NextMove {
                                         case 3:
                                             return "RIGHT";
                                     }
-                                } else {
-                                    retryCount++;
-                                    return "ERROR";
-                                }
-
                             } else {
                                 System.out.println("ERRRORRRR:target direction is -1!!!!!!!!!!");
 
@@ -589,11 +565,6 @@ public class NextMove {
 
                         if (targetdir >= 0) {
 
-                            if (retryCount >= 3 || nextX != tank.getX() || nextY != tank.getY() || nextDir != tank.getDirection()) {
-                                nextX = tank.getX();
-                                nextY = tank.getY();
-                                nextDir = tank.getDirection();
-                                retryCount = 0;
                                 switch (targetdir) {
                                     case 0:
                                         return "UP";
@@ -604,10 +575,6 @@ public class NextMove {
                                     case 3:
                                         return "RIGHT";
                                 }
-                            } else {
-                                retryCount++;
-                                return "ERROR";
-                            }
                         } else {
                             System.out.println("ERRRORRRR:target direction is -1!!!!!!!!!!");
 
