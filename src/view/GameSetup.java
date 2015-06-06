@@ -301,30 +301,6 @@ public class GameSetup extends javax.swing.JFrame implements Observer {
 
     }//GEN-LAST:event_joinBtnActionPerformed
 
-    /*
-     Method to restart the application by recalling its jar. But doesnt work
-     */
-//    public void restartApplication() throws IOException, URISyntaxException {
-//        final String javaBin = System.getProperty("java.home") + File.separator + "bin" + File.separator + "java";
-////        final File currentJar = new File(Desolator.class.getProtectionDomain().getCodeSource().getLocation().toURI());
-//        final File currentJar = new File("./dist/Desolator.jar");
-//        
-//        /* is it a jar file? */
-//        if (!currentJar.getName().endsWith(".jar")) {
-//            return;
-//        }
-//
-//        /* Build command: java -jar application.jar */
-//        final ArrayList<String> command = new ArrayList<String>();
-//        command.add(javaBin);
-//        command.add("-jar");
-//        command.add(currentJar.getPath());
-//
-//        final ProcessBuilder builder = new ProcessBuilder(command);
-//        builder.start();
-//        System.exit(0);
-//    }
-
     private void joinBtnMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_joinBtnMouseEntered
         ImageIcon ii = new ImageIcon("../Desolator/src/images/PLayNowIconFocussed.png");
         joinBtn.setIcon(ii);

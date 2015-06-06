@@ -303,19 +303,60 @@ public class NextMove {
                         int l = posX - 1;
                         int r = posX + 1;
                         GameObject[][] gameObArr = map.getMap();
-                        while (l >= 0 && !(gameObArr[l][posY] == null || gameObArr[l][posY].toString().equalsIgnoreCase("CoinPile") || gameObArr[l][posY].toString().equalsIgnoreCase("LifePack"))) {
-                            l--;
+
+                        boolean decL = true;
+
+                        while (l > 0 || r < (MAP_SIZE - 1)) {
+                            if (decL) {
+                                if (l > 0 && !(gameObArr[l][posY] == null || gameObArr[l][posY].toString().equalsIgnoreCase("CoinPile") || gameObArr[l][posY].toString().equalsIgnoreCase("LifePack"))) {
+                                    l--;
+                                } else {
+                                    if (l <= 0) {
+                                        continue;
+                                    } else {
+                                        break;
+                                    }
+                                }
+                            } else {
+                                if (r < (MAP_SIZE - 1) && !(gameObArr[r][posY] == null || gameObArr[r][posY].toString().equalsIgnoreCase("CoinPile") || gameObArr[r][posY].toString().equalsIgnoreCase("LifePack"))) {
+                                    r++;
+                                } else {
+                                    if (r >= (MAP_SIZE - 1)) {
+                                        continue;
+                                    } else {
+                                        break;
+                                    }
+                                }
+                            }
+                            decL = !decL;
+
                         }
                         targetY = posY;
-                        if (l < 0) { // We dont have any posible cell to move to in our left side
-                            while (r < MAP_SIZE && !(gameObArr[r][posY] == null || gameObArr[r][posY].toString().equalsIgnoreCase("CoinPile") || gameObArr[r][posY].toString().equalsIgnoreCase("LifePack"))) {
-                                r++;
-                            }
+
+                        if (l < 0) {
                             targetX = r;
-                        } else {
+                        } else if (r >= MAP_SIZE) {
                             targetX = l;
+                        } else {
+                            if (posX - l <= r - posX) {
+                                targetX = l;
+                            } else {
+                                targetX = r;
+                            }
                         }
 
+//                        while (l >= 0 && !(gameObArr[l][posY] == null || gameObArr[l][posY].toString().equalsIgnoreCase("CoinPile") || gameObArr[l][posY].toString().equalsIgnoreCase("LifePack"))) {
+//                            l--;
+//                        }
+//                        
+//                        if (l < 0) { // We dont have any posible cell to move to in our left side
+//                            while (r < MAP_SIZE && !(gameObArr[r][posY] == null || gameObArr[r][posY].toString().equalsIgnoreCase("CoinPile") || gameObArr[r][posY].toString().equalsIgnoreCase("LifePack"))) {
+//                                r++;
+//                            }
+//                            targetX = r;
+//                        } else {
+//                            targetX = l;
+//                        }
                     } else {
                         dodgeVertical = false;
                         dodgeHorizontal = true;
@@ -324,18 +365,64 @@ public class NextMove {
                         int l = posY + 1;
                         int r = posY - 1;
                         GameObject[][] gameObArr = map.getMap();
-                        while (r >= 0 && !(gameObArr[posX][r] == null || gameObArr[posX][r].toString().equalsIgnoreCase("CoinPile") || gameObArr[posX][r].toString().equalsIgnoreCase("LifePack"))) {
-                            r--;
+                        
+                        
+                        boolean decR = true;
+
+                        while (r > 0 || l < (MAP_SIZE - 1)) {
+                            if (decR) {
+                                if (r > 0 && !(gameObArr[posX][r] == null || gameObArr[posX][r].toString().equalsIgnoreCase("CoinPile") || gameObArr[posX][r].toString().equalsIgnoreCase("LifePack"))) {
+                                    r--;
+                                } else {
+                                    if (r <= 0) {
+                                        continue;
+                                    } else {
+                                        break;
+                                    }
+                                }
+                            } else {
+                                if (l < (MAP_SIZE - 1) && !(gameObArr[posX][l] == null || gameObArr[posX][l].toString().equalsIgnoreCase("CoinPile") || gameObArr[posX][l].toString().equalsIgnoreCase("LifePack"))) {
+                                    l++;
+                                } else {
+                                    if (l >= (MAP_SIZE - 1)) {
+                                        continue;
+                                    } else {
+                                        break;
+                                    }
+                                }
+                            }
+                            decR = !decR;
+
                         }
                         targetX = posX;
+
                         if (r < 0) {
-                            while (l < MAP_SIZE && !(gameObArr[posX][l] == null || gameObArr[posX][l].toString().equalsIgnoreCase("CoinPile") || gameObArr[posX][l].toString().equalsIgnoreCase("LifePack"))) {
-                                l++;
-                            }
                             targetY = l;
-                        } else {
+                        } else if (l >= MAP_SIZE) {
                             targetY = r;
+                        } else {
+                            if (l - posY <= posY - r) {
+                                targetY = l;
+                            } else {
+                                targetY = r;
+                            }
                         }
+                        
+                        
+                        
+//                        
+//                        while (r >= 0 && !(gameObArr[posX][r] == null || gameObArr[posX][r].toString().equalsIgnoreCase("CoinPile") || gameObArr[posX][r].toString().equalsIgnoreCase("LifePack"))) {
+//                            r--;
+//                        }
+//                        targetX = posX;
+//                        if (r < 0) {
+//                            while (l < MAP_SIZE && !(gameObArr[posX][l] == null || gameObArr[posX][l].toString().equalsIgnoreCase("CoinPile") || gameObArr[posX][l].toString().equalsIgnoreCase("LifePack"))) {
+//                                l++;
+//                            }
+//                            targetY = l;
+//                        } else {
+//                            targetY = r;
+//                        }
                     }
                 }
 
@@ -378,16 +465,16 @@ public class NextMove {
                     }
 
                     if (targetdir >= 0) {
-                            switch (targetdir) {
-                                case 0:
-                                    return "UP";
-                                case 1:
-                                    return "LEFT";
-                                case 2:
-                                    return "DOWN";
-                                case 3:
-                                    return "RIGHT";
-                            }
+                        switch (targetdir) {
+                            case 0:
+                                return "UP";
+                            case 1:
+                                return "LEFT";
+                            case 2:
+                                return "DOWN";
+                            case 3:
+                                return "RIGHT";
+                        }
                     } else {
                         System.out.println("ERRRORRRR:target direction is -1!!!!!!!!!!");
 
@@ -447,7 +534,7 @@ public class NextMove {
                             gameObScores[i] = coeff * COIN;
                             break;
                         case "LifePack":
-                            if (tank.getHealth() <= 50) {
+                            if (tank.getHealth() <= 70) {
                                 coeff = 1 / (tank.getHealth() * timeCosts.get(i));
                                 gameObScores[i] = coeff * LIFE * 1000000;
                                 break;
@@ -516,16 +603,16 @@ public class NextMove {
 
                             if (targetdir >= 0) {
 
-                                    switch (targetdir) {
-                                        case 0:
-                                            return "UP";
-                                        case 1:
-                                            return "LEFT";
-                                        case 2:
-                                            return "DOWN";
-                                        case 3:
-                                            return "RIGHT";
-                                    }
+                                switch (targetdir) {
+                                    case 0:
+                                        return "UP";
+                                    case 1:
+                                        return "LEFT";
+                                    case 2:
+                                        return "DOWN";
+                                    case 3:
+                                        return "RIGHT";
+                                }
                             } else {
                                 System.out.println("ERRRORRRR:target direction is -1!!!!!!!!!!");
 
@@ -565,16 +652,16 @@ public class NextMove {
 
                         if (targetdir >= 0) {
 
-                                switch (targetdir) {
-                                    case 0:
-                                        return "UP";
-                                    case 1:
-                                        return "LEFT";
-                                    case 2:
-                                        return "DOWN";
-                                    case 3:
-                                        return "RIGHT";
-                                }
+                            switch (targetdir) {
+                                case 0:
+                                    return "UP";
+                                case 1:
+                                    return "LEFT";
+                                case 2:
+                                    return "DOWN";
+                                case 3:
+                                    return "RIGHT";
+                            }
                         } else {
                             System.out.println("ERRRORRRR:target direction is -1!!!!!!!!!!");
 
