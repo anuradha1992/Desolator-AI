@@ -36,7 +36,7 @@ public class Connection extends Observable{
      *
      * @return
      */
-    public static Connection getInstance(String serverIP, int portIn, int portOut) {
+    public static Connection getInstance(String serverIP, int portIn, int portOut) { //
         if (connection == null) {
             return new Connection(serverIP, portIn, portOut);
         }
@@ -50,6 +50,11 @@ public class Connection extends Observable{
         this.PORT_OUT = portOut;
     }
 
+    /**
+     * Sends the passed message to the server specified by the SERVER_IP and PORT_OUT  
+     * @param message
+     * @throws IOException 
+     */
     public void sendMessage(String message) throws IOException{
         Socket clientSocket;
             clientSocket = new Socket(SERVER_IP, PORT_OUT); //6000
@@ -59,6 +64,11 @@ public class Connection extends Observable{
             out.close();
     }
 
+    /**
+     * Reads an incoming message from the server and returns it
+     * @return
+     * @throws java.net.SocketException 
+     */
     public String receiveMessage() throws java.net.SocketException{
 
         String message = null;
@@ -82,7 +92,7 @@ public class Connection extends Observable{
             }
 
         } catch (Exception ex) {
-            System.out.println("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ Connection reset");
+            System.out.println("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ Connection reset $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$");
         } finally {
             try {
                 if (serverSocket != null) {

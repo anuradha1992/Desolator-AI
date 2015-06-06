@@ -92,7 +92,6 @@ public class Interpreter extends Observable {
             ex.printStackTrace();
             System.exit(0);
         }
-//        outBuffer.sendMessage(this.message);
         setChanged();
         notifyObservers(this);
     }
@@ -101,8 +100,11 @@ public class Interpreter extends Observable {
         return playerName;
     }
 
+    /**
+     * Takes the message from the input buffer, parses it and creates the Map
+     * @return the map
+     */
     Map requestMap() {
-
         String message = inBuffer.getNextMessage();
         if (isJoinError(message)) {
             return null;
@@ -121,6 +123,10 @@ public class Interpreter extends Observable {
         return map;
     }
 
+    /**
+     * Takes the message from the input buffer, parses it and creates the player array
+     * @return 
+     */
     Tank[] requestPlayers() {
 
         tanks = new Tank[MAX_PLAYER_COUNT];
@@ -128,7 +134,6 @@ public class Interpreter extends Observable {
         message = inBuffer.getNextMessage();
 
         if (isJoinError(message)) {
-            //handleError(message);
             return null;
         } else {
 
@@ -201,8 +206,6 @@ public class Interpreter extends Observable {
             } else {
                 coins = new CoinPile(x, y, val, lt * 4);
             }
-
-//            System.out.println("coin created with a lt of " + lt);
             objects = new GameObject[]{coins};
             return objects;
         } else if (message.startsWith("L:")) {
@@ -265,7 +268,6 @@ public class Interpreter extends Observable {
             return objects;
         } else if (isInGameError(message)) {
             msgType = "E";
-//            System.out.println("ingame erorrrrrrrrrrr");
             handleInGameError();
             return null;
         } else {

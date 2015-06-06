@@ -8,6 +8,7 @@ import sprites.LifePack;
 import sprites.Tank;
 import view.Map;
 
+
 public class NextMove {
 
     private static boolean dodgingBullet = false;
@@ -83,6 +84,9 @@ public class NextMove {
 
     }
 
+    /*
+    *Add the objects coresponding to the actions that the tank can possibly take at a given moment
+    */
     public void addActionObjects() {
         try {
             if (tank != null && !tank.isToBeRemoved()) {
@@ -114,8 +118,6 @@ public class NextMove {
                                         validGameObArr.add(gameObArr[i][j]);
                                         timeCosts.add((float) timeCost);
                                         aStarPaths.add(path);
-//                                    System.out.println("Place of added actionObjects to array");
-//                                    getActualPath(path);
                                     }
 
                                 }
@@ -124,21 +126,7 @@ public class NextMove {
                         }
                     }
                 }
-
-//            if (opponents != null) {
-//                for (int k = 0; k < opponents.length; k++) {
-//                    if (opponents[k] != null) {
-//                        if (opponents[k].getHealth() > 0) {
-//                            addShootableOpponents(opponents[k]);
-//                        }
-//                    }
-//                }
-//            }
             }
-
-//        System.out.println("___________________________________________________________________________________________");
-//        System.out.println("size " + validGameObArr.size());
-//        System.out.println("___________________________________________________________________________________________");
         } catch (Exception e) {
             System.out.println("Game obs null exception occured");
         }
@@ -180,7 +168,6 @@ public class NextMove {
             }
 
         } else {
-            //System.out.println("in else " + tank.getX() + "  " + opponent.getX());
             if (tank.getX() == opponent.getX() && opponent.getHealth() > 0) {
                 if (tank.getY() <= opponent.getY()) {
 
@@ -211,6 +198,10 @@ public class NextMove {
         }
     }
 
+    /*
+    * Find the set of tanks that are in our range of shooting visinity
+    * Only opponents that are less than or equal to 8 positions away from us are considered to be shootable
+    */
     public void addShootableOpponents() {
         for (Tank opponent : opponents) {
             if (opponent != null) {
@@ -219,7 +210,6 @@ public class NextMove {
                 boolean aligned = isClearlyAlignedOpponent(opponent);
 
                 if (aligned) {
-                    //System.out.println("opponent " + opponent.getName() + " is clearly aligned!!!!!!!!!!!");
                     if (tank.getDirection() == 0 && opponent.getY() < tank.getY()) {
                         cost = tank.getY() - opponent.getY();
                     } else if (tank.getDirection() == 2 && opponent.getY() > tank.getY()) {
@@ -234,7 +224,6 @@ public class NextMove {
                     if (cost <= 8) { //add as shootable only if it is in very close range coz if killed at distance someone else might get the huge coinpile  :P
                         validGameObArr.add(opponent);
                         timeCosts.add(cost);
-                        //System.out.println("opponent addedd!!!!!!!!!!!");
                         aStarPaths.add(null);
                     }
                 } else {  //else just add the other opponents even if they are far away
@@ -258,6 +247,9 @@ public class NextMove {
 
     }
 
+    /*
+    * Returns true if the passed opponent direction is headed towards our tank
+    */
     private boolean isAimedAtMe(Tank opponent) {
         if (opponent.getDirection() == 0 && tank.getY() < opponent.getY()) {
             return true;
@@ -272,6 +264,9 @@ public class NextMove {
         }
     }
 
+    /*
+    * Checks and returns true if any tank has shot while aimed at us
+    */
     private boolean bulletIncoming() {
         boolean incoming = false;
         for (Tank opponent : opponents) {
@@ -282,21 +277,25 @@ public class NextMove {
         return incoming;
     }
 
+    /*
+    * The min interface of the AI to the game client
+    * Processes the current game state and calculates and returns the best possible move that should be taken next
+    */
     public String getNextMove() {
-        if (bulletIncoming()) {
+        if (bulletIncoming()) { //If any bullet is heading our way, change state to the dodging state
             dodgingBullet = true;
-            System.out.println("bullet incomingggggggggggggggggggggggg");
+            System.out.println("bullet incoming");
         }
         if (validGameObArr != null && validGameObArr.size() != 0) {
-            if (dodgingBullet) {
-                System.out.println("in dodging state!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+            if (dodgingBullet) { //If tank is in dodging state
+                System.out.println("in dodging state");
                 
-                if(tank.getCellOccupiedCount() > 0){
+                if(tank.getCellOccupiedCount() > 0){ //If the tank is trapped and cannot dodge, just shoot
                     return "SHOOT";
                 }
                 
-                if (!dodgeHorizontal && !dodgeVertical) {
-                    if (tank.getDirection() == 0 || tank.getDirection() == 2) {
+                if (!dodgeHorizontal && !dodgeVertical) { //Execute this if-else code block only the first time after changing state to Dodging
+                    if (tank.getDirection() == 0 || tank.getDirection() == 2) { //If we were headed North or South
                         dodgeVertical = true;
                         dodgeHorizontal = false;
 
@@ -308,6 +307,7 @@ public class NextMove {
 
                         boolean decL = true;
 
+                        //Find the closest free cell that we can move to avoid being hit
                         while (l > 0 || r < (MAP_SIZE - 1)) {
                             if (decL) {
                                 if (l > 0 && !(gameObArr[l][posY] == null || gameObArr[l][posY].toString().equalsIgnoreCase("CoinPile") || gameObArr[l][posY].toString().equalsIgnoreCase("LifePack"))) {
@@ -351,18 +351,6 @@ public class NextMove {
                             }
                         }
 
-//                        while (l >= 0 && !(gameObArr[l][posY] == null || gameObArr[l][posY].toString().equalsIgnoreCase("CoinPile") || gameObArr[l][posY].toString().equalsIgnoreCase("LifePack"))) {
-//                            l--;
-//                        }
-//                        
-//                        if (l < 0) { // We dont have any posible cell to move to in our left side
-//                            while (r < MAP_SIZE && !(gameObArr[r][posY] == null || gameObArr[r][posY].toString().equalsIgnoreCase("CoinPile") || gameObArr[r][posY].toString().equalsIgnoreCase("LifePack"))) {
-//                                r++;
-//                            }
-//                            targetX = r;
-//                        } else {
-//                            targetX = l;
-//                        }
                     } else {
                         dodgeVertical = false;
                         dodgeHorizontal = true;
@@ -418,37 +406,14 @@ public class NextMove {
                             }
                         }
                         
-                        
-                        
-//                        
-//                        while (r >= 0 && !(gameObArr[posX][r] == null || gameObArr[posX][r].toString().equalsIgnoreCase("CoinPile") || gameObArr[posX][r].toString().equalsIgnoreCase("LifePack"))) {
-//                            r--;
-//                        }
-//                        targetX = posX;
-//                        if (r < 0) {
-//                            while (l < MAP_SIZE && !(gameObArr[posX][l] == null || gameObArr[posX][l].toString().equalsIgnoreCase("CoinPile") || gameObArr[posX][l].toString().equalsIgnoreCase("LifePack"))) {
-//                                l++;
-//                            }
-//                            targetY = l;
-//                        } else {
-//                            targetY = r;
-//                        }
                     }
                 }
 
-                //System.out.println("dodge targets");
-                //System.out.println(targetX + "," + targetY);
+                //Find the path to the predetermined cell
                 PathFinder pf = new PathFinder(tank.getX(), tank.getY(), tank.getDirection(), targetX, targetY, map);
                 ArrayList<Cell> path = pf.findPath();
-
-                //This code snippet is a duplicate and need to be implemented as a function
                 ArrayList<Cell> actualPath = getActualPath(path);
-                //System.out.println("dodge path start");
-//                for (Cell cell : actualPath) {
-//                    System.out.println(cell.getX() + "," + cell.getY());
-//                }
-                //System.out.println("dodge path end");
-//                if (actualPath.size() > 1) {
+                
                 if (tank.getX() != targetX || tank.getY() != targetY) {
                     Cell nextCell = actualPath.get(1);
 
@@ -464,7 +429,7 @@ public class NextMove {
                         } else if (nextCell.getY() < cury) {
                             targetdir = 0;
                         } else {
-                            System.out.println("ERRRORRR:this next move is the current cell itself!!!!!!!!!!!!!!!!!!!!");
+                            System.out.println("ERROR:This next move cell is the current cell itself!");
                         }
                     } else {
                         if (nextCell.getX() > curx) {
@@ -486,23 +451,22 @@ public class NextMove {
                                 return "RIGHT";
                         }
                     } else {
-                        System.out.println("ERRRORRRR:target direction is -1!!!!!!!!!!");
+                        System.out.println("ERROR:Target direction is -1");
 
                     }
-
-//                } else if (actualPath.size() <= 1) { //dodging is complete
                 }
+                
                 if (tank.getX() == targetX && tank.getY() == targetY) { //dodging is complete
-                    System.out.println("dogingg completed!!!!!!!!!!!");
+                    System.out.println("dodging completed successfully");
                     dodgingBullet = false;
                     dodgeHorizontal = false;
                     dodgeVertical = false;
                 }
 
             } else {
-                System.out.println("Not in dodging state!!!!!!!!!!!!!!!!!!!");
+                System.out.println("Not in dodging state!");
 
-                //this loop checks if any tank is obstructing our path and shoots it untill it leaves our path
+                //this loop checks if any tank is obstructing our path and shoots it untill it leaves our path or get destroyed
                 for (GameObject ob : validGameObArr) {
                     if (ob.toString().startsWith("P")) {
                         switch (tank.getDirection()) {
@@ -531,8 +495,10 @@ public class NextMove {
                     }
                 }
 
+                //Array to store the scores evaluated for each possible option
                 float gameObScores[] = new float[validGameObArr.size()];
 
+                //calculate the score values for each possible option taking in to account the preset weights for each type of option
                 for (int i = 0; i < validGameObArr.size(); i++) {
                     GameObject ob = validGameObArr.get(i);
                     String type = ob.toString();
@@ -540,11 +506,10 @@ public class NextMove {
                     switch (type) {
                         case "CoinPile":
                             coeff = (((CoinPile) ob).getValue() / timeCosts.get(i));
-//                        coeff = (1 / timeCosts.get(i));
                             gameObScores[i] = coeff * COIN;
                             break;
                         case "LifePack":
-                            if (tank.getHealth() <= 80) {
+                            if (tank.getHealth() <= 80) { //If the tank health is less than 80, it should go for lifepacks, hence multiplied by a large number(1000000)
                                 coeff = 1 / (tank.getHealth() * timeCosts.get(i));
                                 gameObScores[i] = coeff * LIFE * 1000000;
                                 break;
@@ -553,11 +518,7 @@ public class NextMove {
                                 gameObScores[i] = coeff * LIFE * 0.000001f;
                                 break;
                             }
-                        default:
-//                        case "LiveGameObject":
-////                            coeff = 1 / timeCosts.get(i);
-////                            gameObScores[i] = coeff * SHOOT;
-
+                        default: //Scores to go after and shoot the opponent that would benefit us the most
                             if (aStarPaths.get(i) != null) {
                                 gameObScores[i] = ((SHOOT / 100000) * (((Tank) ob).getScore()) + 1) / (((Tank) ob).getHealth() * timeCosts.get(i));
                             } else {
@@ -567,6 +528,7 @@ public class NextMove {
                     }
                 }
 
+                //Finding the best possible next move from the highest score
                 float max = 0;
                 int maxIdx = 0;
                 for (int i = 0; i < gameObScores.length; i++) {
@@ -576,15 +538,10 @@ public class NextMove {
                         maxIdx = i;
                     }
                 }
-//            System.out.println(validGameObArr.size());
-//            System.out.println(timeCosts.size());
-//            System.out.println(aStarPaths.size());
-//            System.out.println("Getting the actualest path : " + maxIdx);
 
-                if (validGameObArr.get(maxIdx).toString().startsWith("P")) {
+                if (validGameObArr.get(maxIdx).toString().startsWith("P")) { //If a tank
 
                     if (aStarPaths.get(maxIdx) != null) {
-                        //System.out.println("SHooooooooooooooootinggggg!!!  ------------------ opponents Anuradha added");
                         ArrayList<Cell> actualPath = getActualPath(aStarPaths.get(maxIdx));
                         if (actualPath.size() > 1) {
                             Cell nextCell = actualPath.get(1);
@@ -601,7 +558,7 @@ public class NextMove {
                                 } else if (nextCell.getY() < cury) {
                                     targetdir = 0;
                                 } else {
-                                    System.out.println("ERRRORRR:this next move is the current cell itself!!!!!!!!!!!!!!!!!!!!");
+                                    System.out.println("ERROR:this next move is the current cell itself!");
                                 }
                             } else {
                                 if (nextCell.getX() > curx) {
@@ -624,12 +581,10 @@ public class NextMove {
                                         return "RIGHT";
                                 }
                             } else {
-                                System.out.println("ERRRORRRR:target direction is -1!!!!!!!!!!");
-
+                                System.out.println("ERROR:target direction is -1!");
                             }
                         }
                     } else {
-                        //System.out.println("SHooooooooooooooootinggggg!!!");
                         return "SHOOT";
                     }
 
@@ -650,7 +605,7 @@ public class NextMove {
                             } else if (nextCell.getY() < cury) {
                                 targetdir = 0;
                             } else {
-                                System.out.println("ERRRORRR:this next move is the current cell itself!!!!!!!!!!!!!!!!!!!!");
+                                System.out.println("ERROR:this next move is the current cell itself!");
                             }
                         } else {
                             if (nextCell.getX() > curx) {
@@ -673,7 +628,7 @@ public class NextMove {
                                     return "RIGHT";
                             }
                         } else {
-                            System.out.println("ERRRORRRR:target direction is -1!!!!!!!!!!");
+                            System.out.println("ERROR:target direction is -1!");
 
                         }
                     }
@@ -681,7 +636,7 @@ public class NextMove {
             }
 
         } else {
-            System.out.println("validgameobarr is nulllllllll");
+            System.out.println("validGameObArr is null");
         }
 
         return "ERROR";
