@@ -33,10 +33,6 @@ public class GameSetup extends javax.swing.JFrame implements Observer {
      */
     public GameSetup() {
         initComponents();
-
-//        this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); // Already there
-//        this.setExtendedState(JFrame.MAXIMIZED_BOTH);
-//        this.setUndecorated(true);
         gridOnCheckBox.setOpaque(false);
         joinBtn.setOpaque(false);
         joinBtn.setContentAreaFilled(false);
@@ -248,7 +244,6 @@ public class GameSetup extends javax.swing.JFrame implements Observer {
     }//GEN-LAST:event_aboutBtnActionPerformed
 
     private void quitBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_quitBtnActionPerformed
-        //JOptionPane pane = new JOptionPane("Are you sure want to exit?", WARNING_MSG, WIDTH);
         int reply = JOptionPane.showConfirmDialog(null, "Are you sure you want to exit?", "Exit", JOptionPane.YES_NO_OPTION);
         if (reply == JOptionPane.YES_OPTION) {
             System.exit(0);
@@ -263,36 +258,29 @@ public class GameSetup extends javax.swing.JFrame implements Observer {
             @Override
             protected Object doInBackground() throws Exception {
                 System.out.println(javax.swing.SwingUtilities.isEventDispatchThread());
-                String serverIP = serverIPTextField.getText();
+                String serverIP = serverIPTextField.getText();  // get server ip, server port and client port
                 int portIn = Integer.parseInt(portInTextField.getText());
                 int portOut = Integer.parseInt(portOutTextField.getText());
                 boolean gridNeeded;
-                if (gridOnCheckBox.isSelected()) {
+                if (gridOnCheckBox.isSelected()) {  // check if user has turned on or off grid
                     gridNeeded = true;
                 } else {
                     gridNeeded = false;
                 }
 
-                GameSession gs = new GameSession(serverIP, portIn, portOut);
+                GameSession gs = new GameSession(serverIP, portIn, portOut);    // start new game session
 
                 gs.initGame();
 
-                GameView gameView = new GameView(gs, gridNeeded);
+                GameView gameView = new GameView(gs, gridNeeded);   // initialize game view
 
                 gs.setGamePanel(gameView.getGamePanel());
-//        boolean errorOccured = gs.startGame();
-                gs.startGame();
-//        if (!errorOccured) {
-
+                gs.startGame();     // start game
                 gs.setObserver(gameView);
                 gameView.setVisible(true);
                 if (gameSetup != null) {
                     gameSetup.dispose();
                 }
-//        }else{
-//            JOptionPane.showMessageDialog(this, "The client will now close");
-//            System.exit(0);
-//        }
                 return null;
             }
         };
@@ -314,6 +302,17 @@ public class GameSetup extends javax.swing.JFrame implements Observer {
     private void portInTextFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_portInTextFieldActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_portInTextFieldActionPerformed
+
+    @Override
+    public void update(Observable o, Object arg) {
+        if (arg != null) {
+            infoLabel.setText((String) arg);
+
+            repaint();
+        } else {
+            infoLabel.setText(null);
+        }
+    }
 
     /**
      * @param args the command line arguments
@@ -371,14 +370,4 @@ public class GameSetup extends javax.swing.JFrame implements Observer {
     private javax.swing.JTextField serverIPTextField;
     // End of variables declaration//GEN-END:variables
 
-    @Override
-    public void update(Observable o, Object arg) {
-        if (arg != null) {
-            infoLabel.setText((String) arg);
-            
-            repaint();
-        } else {
-            infoLabel.setText(null);
-        }
-    }
 }
