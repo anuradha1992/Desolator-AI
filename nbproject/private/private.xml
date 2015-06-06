@@ -3,16 +3,15 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/D:/UNIVERSITY/Semester%204/Programming%20Challenge%20II/Desolator/src/sprites/Tank.java</file>
-            <file>file:/D:/UNIVERSITY/Semester%204/Programming%20Challenge%20II/Desolator/src/connection/Connection.java</file>
-            <file>file:/D:/UNIVERSITY/Semester%204/Programming%20Challenge%20II/Desolator/src/view/GamePanel.java</file>
-            <file>file:/D:/UNIVERSITY/Semester%204/Programming%20Challenge%20II/Desolator/src/connection/GameSession.java</file>
-            <file>file:/D:/UNIVERSITY/Semester%204/Programming%20Challenge%20II/Desolator/src/game_maintenance/StatusUpdater.java</file>
-            <file>file:/D:/UNIVERSITY/Semester%204/Programming%20Challenge%20II/Desolator/src/ai/NextMove.java</file>
-            <file>file:/D:/UNIVERSITY/Semester%204/Programming%20Challenge%20II/Desolator/src/connection/Interpreter.java</file>
-            <file>file:/D:/UNIVERSITY/Semester%204/Programming%20Challenge%20II/Desolator/src/connection/InputMessageBuffer.java</file>
-            <file>file:/D:/UNIVERSITY/Semester%204/Programming%20Challenge%20II/Desolator/src/view/Map.java</file>
-            <file>file:/D:/UNIVERSITY/Semester%204/Programming%20Challenge%20II/Desolator/src/ai/PathFinder.java</file>
+            <file>file:/D:/My%20stuff/Uni/Semester%204/Programming%20Challenge%20II/Desolator/src/view/GameSetup.java</file>
+            <file>file:/D:/My%20stuff/Uni/Semester%204/Programming%20Challenge%20II/Desolator/src/game_maintenance/StatusUpdater.java</file>
+            <file>file:/D:/My%20stuff/Uni/Semester%204/Programming%20Challenge%20II/Desolator/src/sprites/Tank.java</file>
+            <file>file:/D:/My%20stuff/Uni/Semester%204/Programming%20Challenge%20II/Desolator/src/ai/NextMove.java</file>
+            <file>file:/D:/My%20stuff/Uni/Semester%204/Programming%20Challenge%20II/Desolator/src/desolator/Desolator.java</file>
+            <file>file:/D:/My%20stuff/Uni/Semester%204/Programming%20Challenge%20II/Desolator/src/view/Map.java</file>
+            <file>file:/D:/My%20stuff/Uni/Semester%204/Programming%20Challenge%20II/Desolator/src/view/GameView.java</file>
+            <file>file:/D:/My%20stuff/Uni/Semester%204/Programming%20Challenge%20II/Desolator/src/view/GamePanel.java</file>
+            <file>file:/D:/My%20stuff/Uni/Semester%204/Programming%20Challenge%20II/Desolator/src/sprites/LiveGameObject.java</file>
         </group>
     </open-files>
 </project-private>
