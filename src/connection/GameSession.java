@@ -35,12 +35,16 @@ public class GameSession extends Observable implements Observer{
         map = null;
     }
 
+    /**
+     * Initialize the game 
+     * Call send request message
+     * Call generate map from the incoming message
+     * Set player name
+     */
     public void initGame() {
         addObserver(GameSetup.getInstance());
         requestJoin();
-
         generateMap();
-
         playerName = i.getPlayerName();
         if (noErrors) {
             placePlayers();
@@ -51,7 +55,6 @@ public class GameSession extends Observable implements Observer{
     private void requestJoin(){
         setChanged();
         notifyObservers("Requesting to Join....");
-//        System.out.println("Requesting to Join....");
         i.requestJoin();
     }
 
@@ -59,10 +62,8 @@ public class GameSession extends Observable implements Observer{
         if (noErrors) {
             map.addObserver(gamePanel);
             startUpdateThread();
-//            return false;
         } else {
             i.handleJoinError();
-//            return true;
         }
     }
 
@@ -75,11 +76,7 @@ public class GameSession extends Observable implements Observer{
         return playerName;
     }
 
-//    public static void main(String[] args) {
-//        new GameSession().initGame();
-//    }
     private void generateMap() {
-//        System.out.println("Genrating Initial Map...");
         setChanged();
         notifyObservers("Genrating Initial Map...");
         map = i.requestMap();
@@ -89,14 +86,12 @@ public class GameSession extends Observable implements Observer{
         } else {
             setChanged();
             notifyObservers("Map Generation Successful");
-//            System.out.println("Map Generation Successful");
         }
     }
 
     private void placePlayers() {
         setChanged();
         notifyObservers("Requesting Initial Player Positions...");
-//        System.out.println("Requesting Initial Player Positions...");
         players = i.requestPlayers();
 
         if (players == null) {
@@ -105,7 +100,6 @@ public class GameSession extends Observable implements Observer{
             noErrors = true;
             setChanged();
             notifyObservers("Players Placement Successful");
-//            System.out.println("Players Placement Successful");
         }
     }
 
