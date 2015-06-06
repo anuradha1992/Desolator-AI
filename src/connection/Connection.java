@@ -50,36 +50,19 @@ public class Connection extends Observable{
         this.PORT_OUT = portOut;
     }
 
-//    public void setServerIP(String SERVER_IP) {
-//        this.SERVER_IP = SERVER_IP;
-//    }
     public void sendMessage(String message) throws IOException{
         Socket clientSocket;
-//        try {
             clientSocket = new Socket(SERVER_IP, PORT_OUT); //6000
             DataOutputStream out = new DataOutputStream(clientSocket.getOutputStream());
             out.writeBytes(message);
             clientSocket.close();
             out.close();
-//        } catch (IOException ex) {
-            
-//            SwingUtilities.invokeLater(new Runnable() {
-//                public void run() {
-            
-//                    JOptionPane.showMessageDialog(null, "Could not connect to the server. Please make sure the server is up and running.", "Error in connecting to the server", JOptionPane.ERROR_MESSAGE);
-//                    System.exit(0);
-//                }
-//            });
-
-//        }
-
     }
 
     public String receiveMessage() throws java.net.SocketException{//This method waits till some message is recieved and returns the received msg
 
         String message = null;
 
-//        ServerSocket serverSocket = null;
         Socket clientSocket = null;
         InputStreamReader socketReader = null;
         try {
@@ -91,7 +74,6 @@ public class Connection extends Observable{
 
             }
             while (message == null) {
-//                System.out.println("while");
 
                 clientSocket = serverSocket.accept();
                 socketReader = new InputStreamReader(clientSocket.getInputStream());
@@ -101,7 +83,6 @@ public class Connection extends Observable{
             }
 
         } catch (Exception ex) {
-            //Logger.getLogger(Connection.class.getName()).log(Level.SEVERE, null, ex);
             System.out.println("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ Connection reset");
         } finally {
             try {
@@ -121,19 +102,4 @@ public class Connection extends Observable{
         return message;
     }
 
-//    public void closeConnection() {
-//        try {
-//            if (serverSocket != null) {
-//                serverSocket.close();
-//            }
-//            if (clientSocket != null) {
-//                clientSocket.close();
-//            }
-//            if (socketReader != null) {
-//                socketReader.close();
-//            }
-//        } catch (IOException ex) {
-//            Logger.getLogger(Connection.class.getName()).log(Level.SEVERE, null, ex);
-//        }
-//    }
 }

@@ -89,6 +89,7 @@ public class StatusUpdater extends Observable implements Runnable {
                                                 //Not fallen to water
                                                 //Make a coin pile
 //                                                System.out.println("DEAD BY SHOT : " + tank.getName());
+
                                                 if (tank.getCoins() > 0) {
                                                     CoinPile coins = new CoinPile(tank.getX(), tank.getY(), tank.getCoins(), 5000 * 4);
                                                     map.updateMap(coins, "CoinPile");
