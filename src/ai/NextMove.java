@@ -314,8 +314,10 @@ public class NextMove {
                                     l--;
                                 } else {
                                     if (l <= 0) {
+                                        decL = !decL;
                                         continue;
                                     } else {
+                                        r = MAP_SIZE;
                                         break;
                                     }
                                 }
@@ -324,8 +326,10 @@ public class NextMove {
                                     r++;
                                 } else {
                                     if (r >= (MAP_SIZE - 1)) {
+                                        decL = !decL;
                                         continue;
                                     } else {
+                                        l = -1;
                                         break;
                                     }
                                 }
@@ -377,8 +381,10 @@ public class NextMove {
                                     r--;
                                 } else {
                                     if (r <= 0) {
+                                        decR = !decR;
                                         continue;
                                     } else {
+                                        l = MAP_SIZE;
                                         break;
                                     }
                                 }
@@ -387,8 +393,10 @@ public class NextMove {
                                     l++;
                                 } else {
                                     if (l >= (MAP_SIZE - 1)) {
+                                        decR = !decR;
                                         continue;
                                     } else {
+                                        r = -1;
                                         break;
                                     }
                                 }
@@ -536,7 +544,7 @@ public class NextMove {
                             gameObScores[i] = coeff * COIN;
                             break;
                         case "LifePack":
-                            if (tank.getHealth() <= 70) {
+                            if (tank.getHealth() <= 80) {
                                 coeff = 1 / (tank.getHealth() * timeCosts.get(i));
                                 gameObScores[i] = coeff * LIFE * 1000000;
                                 break;

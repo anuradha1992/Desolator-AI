@@ -67,24 +67,16 @@ public class GamePanel extends JPanel implements ActionListener, Observer {
     GameSession gs;
     private boolean isPackExpirationUpdate;
 
-//    private class packExpirationUpdater extends Observable{
-//        @Override
-//        public void update(Observer ob,Object obj){
-//            
-//        }
-//    }
     public GamePanel(GameSession gs, boolean gridNeeded) {
         this.gs = gs;
         this.gridNeeded = gridNeeded;
-//        tank = new Tank("P0", INITIAL_X, INITIAL_Y, INITIAL_DIRECTION);
-
         setTanks();
-
         cells = new ArrayList<>(cellCount * cellCount);
         isPackExpirationUpdate = false;
         initPanel();
     }
 
+    /* Separate our tank and the opponents */
     private void setTanks() {
         String tankName = gs.getPlayerName();
         Tank[] tanks = gs.getTanks();
@@ -122,6 +114,7 @@ public class GamePanel extends JPanel implements ActionListener, Observer {
         return height_of_block;
     }
 
+    /* Initialize the game panel */
     private void initPanel() {
 
         addKeyListener(new KeyInputAdapter(tank));
@@ -139,6 +132,7 @@ public class GamePanel extends JPanel implements ActionListener, Observer {
         }
     }
 
+    /* Draw the tank if the tank is not dead */
     private void drawTank(Graphics g) {
 
         if (tank.getHealth() > 0) {
@@ -158,7 +152,7 @@ public class GamePanel extends JPanel implements ActionListener, Observer {
     }
 
     @Override
-    public void paintComponent(Graphics g) {
+    public void paintComponent(Graphics g) {    // method to draw the panel
 
         super.paintComponent(g);
         drawBackground(g);
@@ -169,19 +163,16 @@ public class GamePanel extends JPanel implements ActionListener, Observer {
 
         checkCollisions();
         drawMap(g);
-
-//        if (!isPackExpirationUpdate) {
         drawTank(g);
         drawOpponents(g);
-//        drawMap(g);
         checkBulletCollisions();
         drawBullets(g);
-//        }
         isPackExpirationUpdate = false;
 
         g.dispose();
     }
 
+    /* Draw bullets when tanks shoot */
     private void drawBullets(Graphics g) {
         Graphics2D g2d = (Graphics2D) g;
         ArrayList bullets = tank.getBullets();
@@ -207,6 +198,7 @@ public class GamePanel extends JPanel implements ActionListener, Observer {
         Toolkit.getDefaultToolkit().sync();
     }
 
+    /* Draw the opponent tanks if the opponent tanks are not dead */
     private void drawOpponents(Graphics g) {
         int i = 0;
         for (Tank t : opponents) {
@@ -223,7 +215,8 @@ public class GamePanel extends JPanel implements ActionListener, Observer {
         }
 
     }
-
+    
+    /* Draws the entire map with bricks, stones, water, coin piles and life packs */
     private void drawMap(Graphics g) {
         Map map = gs.getMap();
         GameObject[][] objects = map.getObjectMap();
@@ -237,14 +230,13 @@ public class GamePanel extends JPanel implements ActionListener, Observer {
                         if (cpile.getLifeTime() == Integer.MAX_VALUE) {
                             msg += "INF ms";
                         } else {
-                            msg += "" + cpile.getLifeTime() + "ms";
+                            msg += "" + cpile.getLifeTime() + "ms";     
                         }
-
                         Font small = new Font("Helvetica", Font.BOLD, 14);
                         FontMetrics metr = this.getFontMetrics(small);
                         g.setColor(Color.black);
                         g.setFont(small);
-                        g.drawString(msg, (cpile.getX() * width_of_block) + ((width_of_block - metr.stringWidth(msg)) / 2), (cpile.getY() * height_of_block) + ((height_of_block - metr.getHeight()) / 2));
+                        g.drawString(msg, (cpile.getX() * width_of_block) + ((width_of_block - metr.stringWidth(msg)) / 2), (cpile.getY() * height_of_block) + ((height_of_block - metr.getHeight()) / 2)); //writes the lifetime and value of the coinpile on top of coinpile
                         String msg2 = "" + cpile.getValue() + "$";
                         if (msg2.length() >= 5) {
                             small = new Font("Helvetica", Font.BOLD, 12);
@@ -270,15 +262,11 @@ public class GamePanel extends JPanel implements ActionListener, Observer {
                     }
 
                 }
-//                else {
-//                    ImageIcon iicell = new ImageIcon("../Desolator/src/images/grass-cell.png");
-//                    g.drawImage(iicell.getImage(), i * width_of_block, j * height_of_block, this);
-//                }
-
             }
         }
     }
 
+    /* Draw the grid of 20 by 20 */
     private void drawGrid(Graphics g) {
         Graphics2D g2d = (Graphics2D) g.create();
 
@@ -321,15 +309,13 @@ public class GamePanel extends JPanel implements ActionListener, Observer {
 
         if ((time % 1000) == 0) {
             tank.move();
-
             repaint();
             tank.stop();
-
         }
 
         ArrayList bullets = tank.getBullets();
 
-        for (int i = 0; i < bullets.size(); i++) {
+        for (int i = 0; i < bullets.size(); i++) {  //Move bullets of our tank by 1 for every 250ms
             Bullet bullet = (Bullet) bullets.get(i);
             if (bullet.isVisible()) {
                 bullet.move();
@@ -338,7 +324,7 @@ public class GamePanel extends JPanel implements ActionListener, Observer {
             }
         }
 
-        for (Tank t : opponents) {
+        for (Tank t : opponents) {  //Move bullets of opponent tanks by 1 for every 250ms
             if (t != null) {
                 ArrayList opponentBullets = t.getBullets();
                 for (int i = 0; i < opponentBullets.size(); i++) {
@@ -356,6 +342,7 @@ public class GamePanel extends JPanel implements ActionListener, Observer {
 
     }
 
+    /* Checks if a tank go to a cell containing a coin pile or life pack. If so remove that coin pile or life pack */
     public void checkCollisions() {
 
         Map map = gs.getMap();
@@ -372,7 +359,6 @@ public class GamePanel extends JPanel implements ActionListener, Observer {
                         for (Tank t : opponents) {
                             if (t != null) {
                                 Rectangle opponentR = t.getBounds();
-//                            System.out.println("INTERSECT Coin = "+coinR.toString()+" Opponent = "+opponentR.toString());
                                 if (t.getHealth() != 0 && opponentR.intersects(coinR)) {
                                     map.removeGameObject(i, j);
                                 }
@@ -380,7 +366,6 @@ public class GamePanel extends JPanel implements ActionListener, Observer {
 
                         }
                         Rectangle playerR = tank.getBounds();
-//                        System.out.println("INTERSECT Coin = "+coinR.toString()+" Tank = "+playerR.toString());
                         if (tank.getHealth() != 0 && playerR.intersects(coinR)) {
                             map.removeGameObject(i, j);
                         }
@@ -414,6 +399,7 @@ public class GamePanel extends JPanel implements ActionListener, Observer {
 
     }
 
+    /* Check if the bullets collide with obstacles and if so remove the bullets from the grid */
     public void checkBulletCollisions() {
 
         Map map = gs.getMap();

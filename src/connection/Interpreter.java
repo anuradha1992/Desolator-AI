@@ -221,6 +221,7 @@ public class Interpreter extends Observable {
             objects = new GameObject[]{life};
             return objects;
         } else if (message.startsWith("G:")) {
+            System.out.println(message);
             msgType = "G";
             setChanged();
             notifyObservers(this);
