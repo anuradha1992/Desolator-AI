@@ -20,6 +20,7 @@ public class Tank extends LiveGameObject {
     private int health = 100;
     private int rank = 0;
     private int isShot = 0;
+    private int cellOccupiedCount = 0;
 
     private static int no_of_tanks = 1;
 
@@ -351,8 +352,17 @@ public class Tank extends LiveGameObject {
     public void setHeadingObstacle(boolean b) {
         headingObstacle = b;
     }
+    
+    public void setCellOccupiedCountToZero() {
+        cellOccupiedCount = 0;
+    }
+    
+    public int getCellOccupiedCount() {
+        return cellOccupiedCount;
+    }
 
     public void setHeadingOccupiedCell(boolean b) {
+        cellOccupiedCount++;
         headingOccupiedCell = b;
     }
 

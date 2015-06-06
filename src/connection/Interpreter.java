@@ -54,12 +54,12 @@ public class Interpreter extends Observable {
 
     Thread inputThread;
     Thread outputThread;
-    
+
     private String msgType = "";
 
     public Interpreter(String serverIP, int portIn, int portOut) {
         joinErrors = new String[]{"PLAYERS_FULL#", "ALREADY_ADDED#", "GAME_ALREADY_STARTED#", "ME_ALREADY_STARTED#"};
-        inGameErrors = new String[]{"OBSTACLE#", "CELL_OCCUPIED#", "DEAD#", "TOO_QUICK#", "INVALID_CELL#", "GAME_HAS_FINISHED#", "GAME_NOT_STARTED_YET#", "NOT_A_VALID_CONTESTANT#","PITFALL#"};
+        inGameErrors = new String[]{"OBSTACLE#", "CELL_OCCUPIED#", "DEAD#", "TOO_QUICK#", "INVALID_CELL#", "GAME_HAS_FINISHED#", "GAME_NOT_STARTED_YET#", "NOT_A_VALID_CONTESTANT#", "PITFALL#"};
         try {
             inBuffer = InputMessageBuffer.getInstance(serverIP, portIn, portOut);
             outBuffer = OutputMessageBuffer.getInstance(serverIP, portIn, portOut);
@@ -158,13 +158,26 @@ public class Interpreter extends Observable {
     public String getCommunicator() {
         return communicator;
     }
-    
-    public String getLastMsgType(){
+
+    public String getLastMsgType() {
         return msgType;
     }
 
     public GameObject[] getUpdate() {
         GameObject[] objects;
+
+        Tank player = null;
+        for (Tank tank : tanks) {
+            if (tank.getName().equals(playerName)) {
+                player = tank;
+                break;
+            }
+        }
+        
+        if(player != null){
+            player.setCellOccupiedCountToZero();
+        }
+
         String message = inBuffer.getNextMessage();
         this.communicator = "server";
         this.message = message;
@@ -172,7 +185,6 @@ public class Interpreter extends Observable {
             msgType = "C";
             setChanged();
             notifyObservers(this);
-            
 
             message = message.substring(2, message.indexOf("#"));
             String[] parts = message.split(":");
@@ -184,12 +196,12 @@ public class Interpreter extends Observable {
             int val = Integer.parseInt(parts[2]);
 
             CoinPile coins = null;
-            if(lt != 5000){
+            if (lt != 5000) {
                 coins = new CoinPile(x, y, val, lt);
-            }else{
-                coins = new CoinPile(x, y, val, lt*4);
+            } else {
+                coins = new CoinPile(x, y, val, lt * 4);
             }
-            
+
 //            System.out.println("coin created with a lt of " + lt);
             objects = new GameObject[]{coins};
             return objects;

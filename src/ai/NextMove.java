@@ -290,9 +290,11 @@ public class NextMove {
         if (validGameObArr != null && validGameObArr.size() != 0) {
             if (dodgingBullet) {
                 System.out.println("in dodging state!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-
-//                int targetX = 0;
-//                int targetY = 0;
+                
+                if(tank.getCellOccupiedCount() > 0){
+                    return "SHOOT";
+                }
+                
                 if (!dodgeHorizontal && !dodgeVertical) {
                     if (tank.getDirection() == 0 || tank.getDirection() == 2) {
                         dodgeVertical = true;
