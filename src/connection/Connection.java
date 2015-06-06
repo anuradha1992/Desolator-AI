@@ -59,7 +59,7 @@ public class Connection extends Observable{
             out.close();
     }
 
-    public String receiveMessage() throws java.net.SocketException{//This method waits till some message is recieved and returns the received msg
+    public String receiveMessage() throws java.net.SocketException{
 
         String message = null;
 
@@ -71,7 +71,6 @@ public class Connection extends Observable{
                 serverSocket = new ServerSocket(PORT_IN);  //7000
             } else {
                 serverSocket = new ServerSocket(PORT_IN);  //7000
-
             }
             while (message == null) {
 
