@@ -36,7 +36,7 @@ public class GameView extends javax.swing.JFrame implements Observer {
     boolean gridNeeded;
     GamePanel gamePanel;
 
-    public GameView(GameSession gs, boolean gridNeeded) {
+    public GameView(GameSession gs, boolean gridNeeded) {   // initialize GameView
         initComponents();
         this.gs = gs;
         this.gridNeeded = gridNeeded;
@@ -46,7 +46,7 @@ public class GameView extends javax.swing.JFrame implements Observer {
         this.setExtendedState(this.getExtendedState() | JFrame.MAXIMIZED_BOTH);
         FileInputStream imgStream = null;
         try {
-            File imgfile = new File("..\\Desolator\\src\\images\\Tank-Bonus-icon.png");
+            File imgfile = new File("..\\Desolator\\src\\images\\Tank-Bonus-icon.png"); // set icon image
             imgStream = new FileInputStream(imgfile);
             BufferedImage bi = ImageIO.read(imgStream);
             ImageIcon myImg = new ImageIcon(bi);
@@ -68,6 +68,7 @@ public class GameView extends javax.swing.JFrame implements Observer {
         this.gs = gs;
     }
 
+    /* initialize GamePanel JPanel to initial settings */
     public void initGamePanel() {
         GamePanel gamePanel = new GamePanel(gs, gridNeeded);
         this.gamePanel = gamePanel;
@@ -87,7 +88,7 @@ public class GameView extends javax.swing.JFrame implements Observer {
             String playerName = i.getPlayerName();
             String display = "";
             if (i.getCommunicator().equals("player")) {
-                switch (playerName) {
+                switch (playerName) {   // identify our tank from all the tanks and set its details on the score board to green color
                     case "P0":
                         display += "Player 1 | Message : ";
                         P0NameLabel.setForeground(Color.GREEN);
@@ -173,7 +174,7 @@ public class GameView extends javax.swing.JFrame implements Observer {
             display += i.getMessage();
             messageLabel.setText(display);
         } else {
-            //Tank array is got as arg
+            //Tank array is got as an argument
             Tank[] tanks = (Tank[]) arg;
             for (Tank t : tanks) {
                 if (t != null) {

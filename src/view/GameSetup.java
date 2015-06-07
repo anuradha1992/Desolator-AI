@@ -20,10 +20,6 @@ import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
 import javax.swing.SwingWorker;
 
-/**
- *
- * @author Anuradha
- */
 public class GameSetup extends javax.swing.JFrame implements Observer {
 
     private static GameSetup gameSetup = null;
@@ -31,7 +27,7 @@ public class GameSetup extends javax.swing.JFrame implements Observer {
     /**
      * Creates new form GameSetup
      */
-    public GameSetup() {
+    public GameSetup() {    // initialize GameSetup
         initComponents();
         gridOnCheckBox.setOpaque(false);
         joinBtn.setOpaque(false);
@@ -40,10 +36,9 @@ public class GameSetup extends javax.swing.JFrame implements Observer {
         quitBtn.setContentAreaFilled(false);
         aboutBtn.setOpaque(false);
         aboutBtn.setContentAreaFilled(false);
-
         FileInputStream imgStream = null;
         try {
-            File imgfile = new File("..\\Desolator\\src\\images\\Tank-Bonus-icon.png");
+            File imgfile = new File("..\\Desolator\\src\\images\\Tank-Bonus-icon.png");     // set images
             imgStream = new FileInputStream(imgfile);
             BufferedImage bi = ImageIO.read(imgStream);
             ImageIcon myImg = new ImageIcon(bi);
@@ -59,12 +54,11 @@ public class GameSetup extends javax.swing.JFrame implements Observer {
                 Logger.getLogger(GameSetup.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
-
         setLocationRelativeTo(null);
-
         gameSetup = this;
     }
 
+    /* Get an instance of the game setup */
     public static GameSetup getInstance() {
         return gameSetup;
     }
@@ -254,7 +248,6 @@ public class GameSetup extends javax.swing.JFrame implements Observer {
     private void joinBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_joinBtnActionPerformed
 
         SwingWorker worker = new SwingWorker() {
-
             @Override
             protected Object doInBackground() throws Exception {
                 System.out.println(javax.swing.SwingUtilities.isEventDispatchThread());
@@ -267,13 +260,9 @@ public class GameSetup extends javax.swing.JFrame implements Observer {
                 } else {
                     gridNeeded = false;
                 }
-
                 GameSession gs = new GameSession(serverIP, portIn, portOut);    // start new game session
-
                 gs.initGame();
-
                 GameView gameView = new GameView(gs, gridNeeded);   // initialize game view
-
                 gs.setGamePanel(gameView.getGamePanel());
                 gs.startGame();     // start game
                 gs.setObserver(gameView);
@@ -304,10 +293,9 @@ public class GameSetup extends javax.swing.JFrame implements Observer {
     }//GEN-LAST:event_portInTextFieldActionPerformed
 
     @Override
-    public void update(Observable o, Object arg) {
+    public void update(Observable o, Object arg) {  // set the message coming from the server in a label in the GUI
         if (arg != null) {
             infoLabel.setText((String) arg);
-
             repaint();
         } else {
             infoLabel.setText(null);

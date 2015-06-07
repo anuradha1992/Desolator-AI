@@ -33,6 +33,7 @@ public class StatusUpdater extends Observable implements Runnable {
     long prevtime;
 
     public StatusUpdater(GameSession session) {
+        /* set session, interpreter, map, tank objects */
         this.session = session;
         interpreter = session.getInterpreter();
         map = session.getMap();
@@ -44,10 +45,9 @@ public class StatusUpdater extends Observable implements Runnable {
 
     @Override
     public void run() {
-        while (true) {
+        while (true) {  // always check if interpreter has recieved an update, get that update and update all the objects related to the game
             GameObject[] obj = interpreter.getUpdate();
             String msgType = interpreter.getLastMsgType();
-
             if (obj != null) {
                 ArrayList<Tank> tempTank = new ArrayList();
                 int k = 0;
@@ -60,8 +60,7 @@ public class StatusUpdater extends Observable implements Runnable {
                                 tempTank.add(tankUpdate);
                             }
                             String name = tankUpdate.getName();
-
-                            for (Tank tank : tanks) {//This update can be done more efficiently by taking the digit in thee name as the index to the array.
+                            for (Tank tank : tanks) {  //This update can be done more efficiently by taking the digit in thee name as the index to the array.
                                 if (tank != null && tank.getName().equals(tankUpdate.getName())) {
                                     tank.setX(tankUpdate.getX());
                                     tank.setY(tankUpdate.getY());
@@ -72,24 +71,14 @@ public class StatusUpdater extends Observable implements Runnable {
                                     if (tank.getIsShot() == 1) {
                                         tank.fire();
                                     }
-//                                    System.out.println("I Is equal to : "+k+" Boolrsn value = "+dead[k]);
                                     if (!dead[k]) {
-//                                        System.out.println("NOT DEAD : " + tank.getName()+" And health is : "+tank.getHealth());
                                         if (tank.getHealth() == 0) {
-//                                            System.out.println("HEALTH 0 : " + tank.getName());
                                             dead[k] = true;
                                             GameObject[][] mapAr = map.getMap();
                                             if (mapAr[tank.getX()][tank.getY()] != null && mapAr[tank.getX()][tank.getY()].toString().equals("Water")) {
-                                                //Fallen to water
-                                                System.out.println("FALLEN TO WATER : " + tank.getName());
-                                                Water water = new Water(tank.getX(), tank.getY());
+                                                Water water = new Water(tank.getX(), tank.getY());  // when our tank falls to water
                                                 map.updateMap(water, "Water");
-
                                             } else {
-                                                //Not fallen to water
-                                                //Make a coin pile
-//                                                System.out.println("DEAD BY SHOT : " + tank.getName());
-
                                                 if (tank.getCoins() > 0) {
                                                     CoinPile coins = new CoinPile(tank.getX(), tank.getY(), tank.getCoins(), 5000 * 4);
                                                     map.updateMap(coins, "CoinPile");
@@ -107,40 +96,11 @@ public class StatusUpdater extends Observable implements Runnable {
                             notifyObservers(tanks);
                         } else if (type.equals("CoinPile") || type.equals("LifePack") || type.equals("Brick")) {
                             map.updateMap(gameObject, type);
-
                         } else {
-                            //This should not happen
-                            System.out.println("ERROR IN RECEIVED GAME OBJECT");
+                            System.out.println("ERROR IN RECEIVED GAME OBJECT");  // this should not happen
                         }
                     }
                 }
-
-//            for (int i = 0; i < map.getObjectMap().length; i++) {
-//                for (int j = 0; j < map.getObjectMap()[i].length; j++) {
-//                    GameObject mapElement = map.getObjectMap()[i][j];
-//                    if (mapElement != null) {
-//
-//                        String type = mapElement.getClass().getName().substring(8);
-//                        if (type.equals("CoinPile")) {
-//                            ((CoinPile) mapElement).decreaseRemainingLifeTime();
-//                            if (((CoinPile) mapElement).getRemainingLifeTime() <= 0) {
-//                                ((CoinPile) mapElement).setAcquired(true);
-//                                map.getObjectMap()[i][j] = null;
-//                                System.out.println("Coin Pile acquired or expired");
-//                            }
-//                        } else if (type.equals("LifePack")) {
-//                            ((LifePack) mapElement).decreaseRemainingLifeTime();
-//                            if (((LifePack) mapElement).getRemainingLifeTime() <= 0) {
-//                                ((LifePack) mapElement).setAcquired(true);
-//                                map.getObjectMap()[i][j] = null;
-//                                System.out.println("Life Pack acquired or expired");
-//                            }
-//                        }
-//                    }
-//
-//                }
-//
-//            }
                 int actual_no_of_tanks = tempTank.size();
                 int current_no_of_tanks = 0;
                 while (tanks[current_no_of_tanks] != null) {
@@ -149,33 +109,21 @@ public class StatusUpdater extends Observable implements Runnable {
                         break;
                     }
                 }
-
                 if (actual_no_of_tanks != current_no_of_tanks) {
                     for (int i = current_no_of_tanks; i < actual_no_of_tanks; i++) {
                         tanks[i] = tempTank.get(i);
                     }
                     session.setTanks(tanks);
                 }
-
-//                System.out.println("Map and Tanks Updated!");
             }
-
-//            long curtime = java.lang.System.currentTimeMillis();
-//            if (curtime - prevtime >= 1000) {
-//                NextMove move = new NextMove(tank, opponents, map);
-//                tank.execute(move.getNextMove());
-//                prevtime = curtime;
-//                System.out.println("&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&");
-//            }
-            if (msgType.equals("G")) {
+            if (msgType.equals("G")) {  // if the update type is a global update then call the NextMove method to determine the next move of the tank
                 NextMove move = new NextMove(tank, opponents, map);
                 tank.execute(move.getNextMove());
-                System.out.println("GGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG");
             }
         }
-
     }
 
+    /* initialize our tank and opponent */
     private void setTanks() {
         String tankName = session.getPlayerName();
         Tank[] tanks = session.getTanks();
@@ -191,11 +139,11 @@ public class StatusUpdater extends Observable implements Runnable {
                         i++;
                     }
                 }
-
             }
         }
     }
 
+    /* Calculate the current ranks of the tanks */
     private void calculateRank(Tank[] tanks) {
         int no_of_tanks = 0;
         while (tanks[no_of_tanks] != null) {
@@ -206,7 +154,6 @@ public class StatusUpdater extends Observable implements Runnable {
         }
         int[] score = new int[no_of_tanks];
         int[] position = new int[no_of_tanks];
-
         int i = 0;
         for (Tank t : tanks) {
             if (t != null) {
@@ -215,7 +162,6 @@ public class StatusUpdater extends Observable implements Runnable {
                 i++;
             }
         }
-
         for (i = 0; i < no_of_tanks - 1; i++) {
             for (int j = 0; j < no_of_tanks - i - 1; j++) {
                 if (score[j] < score[j + 1]) {
@@ -230,9 +176,7 @@ public class StatusUpdater extends Observable implements Runnable {
 
             }
         }
-
         int rank = 1;
-
         for (int j = 0; j < position.length; j++) {
             tanks[position[j]].setRank(rank);
             rank++;

@@ -24,10 +24,8 @@ public class PathFinder {
     GameObject[][] mapArray;
     Cell[][] cellMapArray;
     final int GRID_SIZE = 20;
-
     ArrayList<Cell> openList;
     ArrayList<Cell> closedList;
-    
     private boolean pathCannotBeFound;
 
     public PathFinder(int x, int y, int direction, int dest_x, int dest_y, Map map) {
@@ -53,41 +51,32 @@ public class PathFinder {
         }
     }
 
-    public ArrayList<Cell> findPath() {
-
-        Cell parent = cellMapArray[y][x];
-        parent.setDirection(direction);
+    public ArrayList<Cell> findPath() {     
+        Cell parent = cellMapArray[y][x];   // initialize the first parent to source cell getting x, y coordinates from input into the constructor
+        parent.setDirection(direction); // set direction of the tank at the moment tank calls the A* algorithm to find path
         parent.setG_cost(0);
         parent.setH_cost(0);
-
-        openList.add(parent);
+        openList.add(parent);   // add initial cell to the open list
         parent.setInOpenList(true);
-
-        addAdjacentCellsToOpenList(parent);
-
-        closedList.add(parent);
-        parent.setInClosedList(true);
-        openList.remove(parent);
+        addAdjacentCellsToOpenList(parent); // adding adjacent cells of the parent to the open list
+        closedList.add(parent);     // add source cell into the closed list
+        parent.setInClosedList(true);   
+        openList.remove(parent);    // remove parent cell from the open list
         parent.setInOpenList(false);
-
         while (closedList.get(closedList.size() - 1) != cellMapArray[dest_y][dest_x]) {
             addAdjacentCellsToOpenList(closedList.get(closedList.size() - 1));
             addMinCostCellToClosedList();
-//            System.out.println(closedList.size());
             if(pathCannotBeFound){
-                return null;
+                return null;    // when path cannot be found return null
             }
         }
-
-        return closedList;
-
+        return closedList;  // if a valid path is there to get to destination, return the closed list
     }
 
+    /* Explore the minimum cost cell to go next from the open list and add it to the closed list */
     private void addMinCostCellToClosedList() {
-
         Cell minCell = null;
         int min = Integer.MAX_VALUE;
-
         for (int i = 0; i < openList.size(); i++) {
             Cell c = openList.get(i);
             if ((c.getG_cost() + c.getH_cost()) <= min) {
@@ -95,44 +84,29 @@ public class PathFinder {
                 minCell = c;
             }
         }
-
         if (minCell != null) {
-
             openList.remove(minCell);
-            minCell.setInOpenList(false);   //////////////
-//            System.out.println("Removed min Cell from open list : " + minCell.getX() + " " + minCell.getY() + " " + minCell.getG_cost() + " " + minCell.getH_cost());
-
+            minCell.setInOpenList(false);
             closedList.add(minCell);
             minCell.setInClosedList(true);
-//            System.out.println("Added min Cell to closed list : " + minCell.getX() + " " + minCell.getY() + " " + minCell.getG_cost() + " " + minCell.getH_cost());
-
         } else {
             pathCannotBeFound = true;
-//            System.out.println("*************PATH CANT BE FOUND*************");
         }
-
     }
 
-    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    /* Look for free adjacent cells around the parent cell and add them to the open list */
     private void addAdjacentCellsToOpenList(Cell parent) {
-        
-        
-        
         int parent_x = parent.getX();
         int parent_y = parent.getY();
         if (parent_x - 1 >= 0) {
             int i = parent_y;
             int j = parent_x - 1;
-            
-            
             if ( (j == dest_x && i == dest_y) || ((mapArray[j][i] == null || mapArray[j][i].toString().equalsIgnoreCase("CoinPile") || mapArray[j][i].toString().equalsIgnoreCase("LifePack")) && !cellMapArray[i][j].isInClosedList())) {
                 if (!cellMapArray[i][j].isInOpenList()) {
                     openList.add(cellMapArray[i][j]);
-
                     cellMapArray[i][j].setParent(parent);
                     cellMapArray[i][j].setInOpenList(true);
                     checkAdjacentCell(cellMapArray[i][j], parent);
-//                    System.out.println("Added to open list : " + j + " " + i + " " + cellMapArray[i][j].getG_cost() + " " + cellMapArray[i][j].getH_cost());
                 } else {
                     if (!cellMapArray[i][j].isInvalid()) {
                         compareG_score(cellMapArray[i][j], parent);
@@ -146,11 +120,9 @@ public class PathFinder {
             if ((j == dest_x && i == dest_y) || ((mapArray[j][i] == null || mapArray[j][i].toString().equalsIgnoreCase("CoinPile") || mapArray[j][i].toString().equalsIgnoreCase("LifePack")) && !cellMapArray[i][j].isInClosedList())) {
                 if (!cellMapArray[i][j].isInOpenList()) {
                     openList.add(cellMapArray[i][j]);
-
                     cellMapArray[i][j].setParent(parent);
                     cellMapArray[i][j].setInOpenList(true);
                     checkAdjacentCell(cellMapArray[i][j], parent);
-//                    System.out.println("Added to open list : " + j + " " + i + " " + cellMapArray[i][j].getG_cost() + " " + cellMapArray[i][j].getH_cost());
                 } else {
                     if (!cellMapArray[i][j].isInvalid()) {
                         compareG_score(cellMapArray[i][j], parent);
@@ -169,7 +141,6 @@ public class PathFinder {
                     cellMapArray[i][j].setParent(parent);
                     cellMapArray[i][j].setInOpenList(true);
                     checkAdjacentCell(cellMapArray[i][j], parent);
-//                    System.out.println("Added to open list : " + j + " " + i + " " + cellMapArray[i][j].getG_cost() + " " + cellMapArray[i][j].getH_cost());
                 } else {
                     if (!cellMapArray[i][j].isInvalid()) {
                         compareG_score(cellMapArray[i][j], parent);
@@ -187,7 +158,6 @@ public class PathFinder {
                     cellMapArray[i][j].setParent(parent);
                     cellMapArray[i][j].setInOpenList(true);
                     checkAdjacentCell(cellMapArray[i][j], parent);
-//                    System.out.println("Added to open list : " + j + " " + i + " " + cellMapArray[i][j].getG_cost() + " " + cellMapArray[i][j].getH_cost());
                 } else {
                     if (!cellMapArray[i][j].isInvalid()) {
                         compareG_score(cellMapArray[i][j], parent);
@@ -197,6 +167,7 @@ public class PathFinder {
         }
     }
 
+    /* When the same cell is met in two paths explored recalculate the G cost, compare it with former G cost and assign the lower one */
     private void compareG_score(Cell cell, Cell parent) {
         int parent_x = parent.getX();
         int parent_y = parent.getY();
@@ -232,8 +203,6 @@ public class PathFinder {
             newDirection = 0;
         }
 
-//        System.out.println("Compare G_score of : " + cell.getX() + " " + cell.getY() + " " + cell.getG_cost() + " " + cell.getH_cost() + " New G cost = " + newG_cost);
-
         if (newG_cost < cell.getG_cost()) {
             cell.setParent(parent);
             cell.setDirection(newDirection);
@@ -241,11 +210,13 @@ public class PathFinder {
         }
     }
 
+    /* call methods to calculate G cost and H cost */
     private void checkAdjacentCell(Cell cell, Cell parent) {
         calculateG_cost_and_direction(cell, parent);
         calculateH_cost(cell);
     }
 
+    /* calculate G cost of a cell */
     private void calculateG_cost_and_direction(Cell cell, Cell parent) {
         int parent_x = parent.getX();
         int parent_y = parent.getY();
@@ -280,6 +251,7 @@ public class PathFinder {
         }
     }
 
+    /* Calculate H cost of a cell */
     private void calculateH_cost(Cell cell) {
         int cost = Math.abs(cell.getX() - dest_x) + Math.abs(cell.getY() - dest_y);
         cell.setH_cost(cost);
