@@ -43,6 +43,10 @@ public class InputMessageBuffer implements Runnable {
         return bufferOb;
     }
 
+    /**
+     * 
+     * @return the next message stored in the buffer
+     */
     public String getNextMessage() {
 
         while (buffer.isEmpty()) {
@@ -57,6 +61,9 @@ public class InputMessageBuffer implements Runnable {
         return message;
     }
 
+    /**
+     * The thread that executes the reading of messages from the server
+     */
     @Override
     public void run() {
         while (true) {
